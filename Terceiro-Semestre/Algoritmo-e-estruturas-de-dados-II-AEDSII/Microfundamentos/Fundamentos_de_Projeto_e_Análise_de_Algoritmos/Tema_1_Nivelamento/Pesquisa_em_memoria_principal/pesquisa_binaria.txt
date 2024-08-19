@@ -1,0 +1,26 @@
+"A pesquisa binária requer que o array esteja ORDENADO. Ela compara o elemento procurado com o localizado no meio do array. 
+Se eles forem iguais, temos uma pesquisa positiva. Caso contrário, se o elemento procurado é menor que o localizado no meio do array, 
+repetimos o processo considerando apenas os elementos do subarray à esquerda da posição central. Se ele é maior, repetimos 
+considerando o subarray da direita. O processo é repetido enquanto o elemento procurado não for encontrado e o subarray em 
+avaliação tiver posições não verificadas. Cada comparação reduz o escopo de busca pela metade."
+
+A pesquisa binária, basicamente, não percorre o array de uma em uma posição, mas vai dividindo-o ao meio.Ex:
+
+...
+boolean resp = false;
+int dir = n - 1, esq = 0, meio, diferença;
+while (esq <= dir)
+{
+    meio = (esq + dir) / 2;  //aqui, ele está somando a posição da esquerda e da direita e dividindo por 2,assim encontrando a posição do número que está no meio do array.
+
+    diferença = (x - array[meio]); // aqui ele define a "diferença", variável que determina se vamos dividir seguindo pela esquerda o pela direita. Obs: "x" = número que a gente está buscando
+    if (diferença == 0)
+    {
+        resp = true;
+        esq = n;
+    } else if (diferença > 0){
+        esq = meio + 1;         // se a diferença for maior que 0, quer dizer que devemos seguir dividindo o array pela direita, por isso aumentamos "esq = meio + 1"
+    } else{
+        dir = meio - 1;         // se a diferença for menor que 0, quer dizer que devemos seguir dividindo o array pela esquerda, por isso "dir = meio - 1"
+    } // fecha o else
+} // fecha o while

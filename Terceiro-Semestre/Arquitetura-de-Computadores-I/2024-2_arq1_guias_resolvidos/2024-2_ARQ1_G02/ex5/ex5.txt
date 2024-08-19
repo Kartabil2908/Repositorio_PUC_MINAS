@@ -1,0 +1,30 @@
+05.) Fazer as operações indicadas: 
+ 
+05a.) manualmente 
+ 
+a.) 101,11(2)  + 10,011(2)    = X(2) 
+b.) 1000,101(2)  - 10,01(2)    = X(2)   (OBS.: Colocar operandos do mesmo tamanho) 
+c.) 101,101(2)  * 10,101(2)   = X(2)  (OBS.: Considerar as vírgulas, após operar) 
+d.) 10111,01(2)  / 11,011(2)  = X(2) 
+e.) 1101011(2)  % 1101(2)   = X(2)  (OBS.: Considerar resto de divisão inteira (%)) 
+DICA: Para conferir os resultados, converter para a base 10
+
+
+a.) 101,11(2)  + 10,011(2)    = X(2) 
+
+101,110 +
+ 10,011
+_______
+1000,001
+
+b.) 1000,101(2)  - 10,01(2)    = X(2)   (OBS.: Colocar operandos do mesmo tamanho) 
+
+1000,101 -
+  10,010   
+________
+0110,011
+
+
+
+c)
+

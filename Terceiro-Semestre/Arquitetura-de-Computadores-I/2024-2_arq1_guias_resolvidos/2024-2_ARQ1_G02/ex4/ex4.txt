@@ -1,0 +1,25 @@
+04.) Fazer as conversões de base entre as bases indicadas: 
+DICAS: Para uma mesma base ou usar agrupamentos ou desagrupamentos. 
+             Para conferir, compare os valores decimais equivalentes. 
+ 
+04a.) manualmente 
+ 
+a.) 0,321(4)    = X(2) 
+b.) 0,3D2(16)  = X(4)  
+c.) 0,751(8)    = X(2) 
+d.) 7,345(8)    = X(4)  DICA: Converter para binário primeiro, depois para a base 4. 
+e.) F,A5E(16)  = X(4)  DICA: Converter diretamente por desagrupamento.
+
+
+a.) 0,321(4)    = X(2) 
+
+0,321(4)
+
+3 = 11(2)
+2 = 10(2)
+1 = 1(2)
+
+11101
+
+// ?? está certo ?? Eu coloco em algum conversor e sempre dá errado. Mas o que eu faço está fazendo sentindo eu acho. Vou perguntar para
+o professor.

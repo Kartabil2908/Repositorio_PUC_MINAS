@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:400&display=swap">
+
+    <title>Página Dividida em Duas Colunas</title>
+    <link rel="stylesheet" href="assets/css/page.css">
+</head>
+
+<body>
+<div id="estrutura">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="video-column">
+                    <h2>Content Hub</h2>
+                    <!-- Área de Vídeo -->
+                    <div class="video-container">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="comments-column">
+                        <div class="comment-card">
+                            <div class="vote-counter">
+                                <button class="vote-button">+</button>
+                                <span class="vote-count"><b>12</b></span>
+                                <button class="vote-minus">-</button>
+                            </div>
+                            <div class="comment-input">
+                                <div class="author-info">
+                                    <div class="line">
+                                        <div class="comment-info">
+                                            <img src="assets/img/avatar1.png" alt="Foto da amy">
+                                        </div>
+                                        <h6><b>amyrobson</b></h6>
+                                        <p>1 month ago</p>
+                                    </div>
+                                    <p class="comment-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        Etiam eget
+                                        ligula eu lectus lobortis condimentum. Aliquam nonummy auctor massa.
+                                        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
+                                        turpis
+                                        egestas. Nulla at risus. Quisque purus magna, auctor et, sagittis ac, posuere
+                                        eu,
+                                        lectus. Nam mattis, felis ut adipiscing."</p>
+                                </div>
+                            </div>
+                            <div class="reply-link">
+                                <span class="reply-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                        <style>
+                                            svg {
+                                                fill: #5357b6
+                                            }
+                                        </style>
+                                        <path
+                                            d="M205 34.8c11.5 5.1 19 16.6 19 29.2v64H336c97.2 0 176 78.8 176 176c0 113.3-81.5 163.9-100.2 174.1c-2.5 1.4-5.3 1.9-8.1 1.9c-10.9 0-19.7-8.9-19.7-19.7c0-7.5 4.3-14.4 9.8-19.5c9.4-8.8 22.2-26.4 22.2-56.7c0-53-43-96-96-96H224v64c0 12.6-7.4 24.1-19 29.2s-25 3-34.4-5.4l-160-144C3.9 225.7 0 217.1 0 208s3.9-17.7 10.6-23.8l160-144c9.4-8.5 22.9-10.6 34.4-5.4z" />
+                                    </svg>
+                                    <a><b>Reply</b></a>
+                            </div>
+                        </div>
+
+                        <div class="comment-card">
+                            <div class="vote-counter">
+                                <button class="vote-button">+</button>
+                                <span class="vote-count"><b>5</b></span>
+                                <button class="vote-minus">-</button>
+                            </div>
+                            <div class="comment-input">
+                                <div class="author-info">
+                                    <div class="line">
+                                        <div class="comment-info">
+                                            <img src="assets/img/avatar.png" alt="Foto do max">
+                                        </div>
+                                        <h6><b>maxblagun</b></h6>
+                                        <p>2 weeks ago</p>
+                                    </div>
+                                    <p class="comment-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        Etiam eget
+                                        ligula eu lectus lobortis condimentum. Aliquam nonummy auctor massa.
+                                        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
+                                        turpis
+                                        egestas. Nulla at risus. Quisque purus magna, auctor et, sagittis ac, posuere
+                                        eu,
+                                        lectus. Nam mattis, felis ut adipiscing."</p>
+                                </div>
+                            </div>
+                            <div class="reply-link">
+                                <span class="reply-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                        <style>
+                                            svg {
+                                                fill: #5357b6
+                                            }
+                                        </style>
+                                        <path
+                                            d="M205 34.8c11.5 5.1 19 16.6 19 29.2v64H336c97.2 0 176 78.8 176 176c0 113.3-81.5 163.9-100.2 174.1c-2.5 1.4-5.3 1.9-8.1 1.9c-10.9 0-19.7-8.9-19.7-19.7c0-7.5 4.3-14.4 9.8-19.5c9.4-8.8 22.2-26.4 22.2-56.7c0-53-43-96-96-96H224v64c0 12.6-7.4 24.1-19 29.2s-25 3-34.4-5.4l-160-144C3.9 225.7 0 217.1 0 208s3.9-17.7 10.6-23.8l160-144c9.4-8.5 22.9-10.6 34.4-5.4z" />
+                                    </svg>
+                                    <a><b>Reply</b></a>
+                            </div>
+                        </div>
+                        <div class="comment-card">
+                            <div class="comment-info">
+                                <img src="assets/img/avatar2.png" alt="Foto do Autor">
+                            </div>
+                            <div class="comment-input">
+                                <div class="char-count">0/200</div>
+                                <textarea placeholder="Digite seu comentário..." rows="4"></textarea>
+                            </div>
+                            <div class="send-button">
+                                <button><b>SEND</b></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+
+                <div class="cards-column">
+                    <div class="card mt-5">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-search" viewBox="0 0 16 16">
+                                    <path
+                                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                </svg>
+                            </span>
+                            <input id="search" type="text" class="form-control" placeholder="O que esta procurando?"
+                                aria-label="O que esta procurando?" aria-describedby="search">
+                        </div>
+                    </div>
+                    <!-- Coluna de Cards 
+                    <div class="start">
+                        <div class="item">-->
+                    <!-- <div class="card">
+                        <div class="line">
+                            <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                class="bi bi-play-btn" viewBox="0 0 16 16">
+                                <path
+                                    d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z" />
+                                <path
+                                    d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
+                            </svg>
+                            <h7>Entenda Stock Market</h7>
+                            <div class="arrow-icon">
+                                <span class="input-group-text">
+                                    <svg id="arrow" xmlns="http://www.w3.org/2000/svg" height="2.25em"
+                                        viewBox="0 120 320 512">
+                                        <path
+                                            d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="line">
+                            <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                class="bi bi-play-btn" viewBox="0 0 16 16">
+                                <path
+                                    d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z" />
+                                <path
+                                    d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
+                            </svg>
+                            <h7>Simplificando as Cryptos</h7>
+                            <div class="arrow-icon">
+                                <svg id="arrow" xmlns="http://www.w3.org/2000/svg" height="2.25em"
+                                    viewBox="0 120 320 512">
+                                    <path
+                                        d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="line">
+                            <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                class="bi bi-card-list" viewBox="0 0 16 16">
+                                <path
+                                    d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
+                                <path
+                                    d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zM4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
+                            </svg>
+                            <h7>Analise de graficos</h7>
+                            <div class="arrow-icon">
+                                <svg id="arrow" xmlns="http://www.w3.org/2000/svg" height="2.25em"
+                                    viewBox="0 120 320 512">
+                                    <path
+                                        d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="line">
+                            <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                class="bi bi-currency-dollar" viewBox="0 0 16 16">
+                                <path
+                                    d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z" />
+                            </svg>
+                            <h7>Seus primeiros passos</h7>
+                            <div class="arrow-icon">
+                                <svg id="arrow" xmlns="http://www.w3.org/2000/svg" height="2.25em"
+                                    viewBox="0 120 320 512">
+                                    <path
+                                        d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!--</div>
+                    </div>-->
+                    <div class="start">
+
+                        <div class="item line">
+                            <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                class="bi bi-currency-dollar" viewBox="0 0 16 16">
+                                <path
+                                    d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z" />
+                            </svg>
+                            <h7>Seus primeiros passos</h7>
+                            <div class="arrow-icon">
+                                <svg id="arrow" xmlns="http://www.w3.org/2000/svg" height="2.25em"
+                                    viewBox="0 120 320 512">
+                                    <path
+                                        d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="item line">
+                            <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                class="bi bi-play-btn" viewBox="0 0 16 16">
+                                <path
+                                    d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z" />
+                                <path
+                                    d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
+                            </svg>
+                            <h7>Entenda Stock Market</h7>
+                            <div class="arrow-icon">
+                                <span class="input-group-text">
+                                    <svg id="arrow" xmlns="http://www.w3.org/2000/svg" height="2.25em"
+                                        viewBox="0 120 320 512">
+                                        <path
+                                            d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+
+
+                        <div class="item line">
+                            <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                class="bi bi-play-btn" viewBox="0 0 16 16">
+                                <path
+                                    d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z" />
+                                <path
+                                    d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
+                            </svg>
+                            <h7>Simplificando as Cryptos</h7>
+                            <div class="arrow-icon">
+                                <svg id="arrow" xmlns="http://www.w3.org/2000/svg" height="2.25em"
+                                    viewBox="0 120 320 512">
+                                    <path
+                                        d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z" />
+                                </svg>
+                            </div>
+                        </div>
+
+
+                        <div class="item line">
+                            <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                class="bi bi-card-list" viewBox="0 0 16 16">
+                                <path
+                                    d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
+                                <path
+                                    d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zM4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
+                            </svg>
+                            <h7>Analise de graficos</h7>
+                            <div class="arrow-icon">
+                                <svg id="arrow" xmlns="http://www.w3.org/2000/svg" height="2.25em"
+                                    viewBox="0 120 320 512">
+                                    <path
+                                        d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="assets/script/script.js">
+
+        let divEstrutura = document.querySelector("#estrutura")
+
+        fetch("dados.json").then((response) => {
+            response.json().then((dados) => {
+                dados.videos.map((video) => {
+                    divEstrutura.innerHTML += `<li> ${videos.url} - ${videos.titulo} </li>`
+                })
+            })
+        })
+    </script>
+
+</body>
+
+</html>

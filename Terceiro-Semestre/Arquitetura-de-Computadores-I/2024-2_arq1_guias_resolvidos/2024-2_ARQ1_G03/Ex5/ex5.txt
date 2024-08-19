@@ -1,0 +1,115 @@
+05a.) Resolver manualmente
+
+a.) 110101(2) - 1011(2)
+
+Alinhando o número de bits:
+
+110101 = 110101 (6 bits)
+
+1011 = 001011 (6 bits)
+
+Complemento de dois de 001011:
+
+Invertendo os bits: 110100
+
+Somando 1: 110101
+
+Somando:
+110101 + 110101 = 1101010 (7 bits)
+
+Resultado:
+Descartando o bit mais à esquerda: 101010(2)
+
+----------------------------------------------------------------------------------------
+
+b.) 101,1001(2) - 3,1(8)
+
+Convertendo 3,1(8) para binário:
+
+3,1(8) = 011,001 (binário)
+
+Alinhando os números e ajustando as vírgulas:
+
+101,1001 = 101,1001 (7 bits)
+
+011,001 = 011,0010 (7 bits)
+
+Complemento de dois de 011,0010:
+
+Invertendo os bits: 100,1101
+Somando 1: 100,1110
+
+Somando:
+101,1001 + 100,1110 = 1010,0111 (8 bits)
+
+Resultado:
+1010,0111(2)
+
+----------------------------------------------------------------------------------------
+
+c.) 213(4) - 3D(16)
+
+Convertendo os números para binário:
+
+213(4) = 10011 (binário)
+3D(16) = 0011 1101 (binário)
+
+Alinhando os números:
+
+10011 = 00010011 (8 bits)
+3D = 00111101 (8 bits)
+
+Complemento de dois de 00111101:
+
+Invertendo os bits: 11000010
+Somando 1: 11000011
+
+Somando:
+
+00010011 + 11000011 = 11010110 (8 bits)
+
+Resultado:
+11010110(2)
+
+----------------------------------------------------------------------------------------
+
+d.) C5(16) - 1011001(2)
+
+Convertendo C5(16) para binário:
+C5(16) = 11000101 (binário)
+
+Alinhando os números:
+11000101 = 11000101 (8 bits)
+1011001 = 01011001 (8 bits)
+
+Complemento de dois de 01011001:
+Invertendo os bits: 10100110
+Somando 1: 10100111
+
+Somando:
+11000101 + 10100111 = 101010100 (9 bits)
+
+esultado:
+Descartando o bit mais à esquerda: 01010100(2)
+
+----------------------------------------------------------------------------------------
+
+e.) 7E(10) - 2D(16)
+
+Convertendo 7E(10) e 2D(16) para binário:
+7E(10) = 1001110 (binário)
+2D(16) = 00101101 (binário)
+
+Alinhando os números:
+7E = 011001110 (9 bits)
+2D = 00101101 (8 bits)
+
+Complemento de dois de 00101101:
+Invertendo os bits: 11010010
+Somando 1: 11010011
+
+Somando:
+011001110 + 11010011 = 1001101011 (10 bits)
+
+Resultado:
+Descartando o bit mais à esquerda: 001101011(2)

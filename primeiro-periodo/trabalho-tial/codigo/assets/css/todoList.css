@@ -1,0 +1,17 @@
+.done {
+    text-decoration: line-through;
+}
+
+.btn {
+    display: flex;
+    padding: 17px 9px;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border-radius: 10px;
+    border: 1px solid rgba(26, 39, 163, 0.55);
+    background: rgba(66, 82, 225, 0.3);
+}
+
+
+

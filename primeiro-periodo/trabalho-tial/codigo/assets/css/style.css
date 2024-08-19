@@ -1,0 +1,99 @@
+.bn-primary {
+    border-radius: 10px;
+    border: 1px solid rgba(26, 39, 163, 0.55);
+    background: rgba(66, 82, 225, 0.57);
+    display: flex;
+    width: 100%;
+    padding: 17px 9px;
+    justify-content: center;
+    align-items: center;
+    gap: 11px;
+
+}
+
+.form-label {
+    color: rgba(0, 0, 0, 0.82);
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+}
+
+.form-control {
+    border: 1px solid rgba(26, 39, 163, 0.55);
+    font-size: 20px;
+    font-weight: lighter;
+    line-height: normal;
+
+}
+
+
+#ativos {
+    border: 1px solid rgba(26, 39, 163, 0.55);
+}
+
+
+
+.btn {
+    display: flex;
+    padding: 17px 9px;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border-radius: 10px;
+    border: 1px solid rgba(26, 39, 163, 0.55);
+    background: rgba(66, 82, 225, 0.3);
+
+}
+
+.btn:hover {
+    background: rgba(66, 82, 225, 0.5);
+}
+
+@media (max-width: 991.98px) {
+    .btn {
+        display: flex;
+        padding: 17px 9px;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        border-radius: 10px;
+        border: 1px solid rgba(26, 39, 163, 0.55);
+        background: rgba(66, 82, 225, 0.3);
+    }
+}
+
+
+@media (max-width: 991.98px) {
+    footer {
+        display: none;
+    }
+}
+
+.progress-bar {
+    background: rgba(66, 82, 225, 0.6);
+    border-radius: 999px;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+
+}
+
+.progress {
+    position: relative;
+}
+
+
+
+h3 {
+    color: rgba(0, 0, 0, 0.82);
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.prosseguir{
+    margin-top: 20px;
+}

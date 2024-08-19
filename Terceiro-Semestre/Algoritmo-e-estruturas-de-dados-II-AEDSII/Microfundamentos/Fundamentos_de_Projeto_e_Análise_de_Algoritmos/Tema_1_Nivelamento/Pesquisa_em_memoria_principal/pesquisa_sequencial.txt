@@ -1,0 +1,13 @@
+A sequencial é um método simples e direto. Esse algoritmo verifica os elementos do array um a um, do início ao fim, 
+até que o elemento desejado seja encontrado ou que todos os elementos tenham sido examinados. Ex:
+
+...
+boolean resp = false;
+for (int i = 0; i < n; i++) // percorre o array, número por número, até encontrar o desejado "array[i] == x"
+{
+    if (array[i] == x)
+    {
+        resp = true;
+        i = n; // sai do for
+    }
+}

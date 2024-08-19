@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/stylecrud.css">
+    <title>PROKNOW</title>
+</head>
+
+
+
+
+<body class="bg-body-tertiary" onload="init()">
+    <div class="container">
+        <header class="col-md-6 py-3 mb-4">
+            <div class="container d-flex flex-wrap justify-content-center">
+                <a href="/"
+                    class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32">
+                        <use xlink:href="#bootstrap" />
+                    </svg>
+                    <span class="fs-4">
+                        <h2>Cadastre seus ganhos!</h2>
+                    </span>
+                </a>
+            </div>
+        </header>
+
+        <main>
+            <form class="needs-validation" novalidate>
+                <div class="row">
+                    <div class="row g-3 mb-2">
+                        <div class="col-sm-6">
+                            <label for="currency" class="form-label">Informe seu salário liquido</label>
+                            <input type="text" class="form-control" id="currency" oninput="formatarMoeda(this)"
+                                placeholder="Insira aqui seu salário!" value="" required>
+                            <div class="invalid-feedback">
+                                Por favor, insira seu salário!
+                            </div>
+                        </div>
+                    </div>
+            </form>
+            <form class="needs-validation" novalidate>
+                <div class="row g-3 mb-2">
+                    <div class="col-sm-6"><label for="bonus" class="form-label">Informe quaisquer bônus
+                            mensal</label>
+                        <input type="text" class="form-control" id="bonus" oninput="formatarMoeda(this)"
+                            placeholder="Insira aqui seus bônus!" value="" required>
+                        <div class="invalid-feedback">
+                            Por favor, insira seus bonus!
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row g-3 mb-2" id="options">
+                <div class="col-sm-6"><label for="ativos" class="form-label">Você possui algum tipo de
+                        investimento?</label>
+                    <select class="form-select" id="ativos" required>
+                        <option value="">Escolha uma opção</option>
+                        <option>Sim</option>
+                        <option>Não</option>
+                    </select>
+                </div>
+            </div>
+            <form class="needs-validation" novalidate>
+                <div class="row g-3 mb-2" id="campoAdicional" style="display: none;">
+                    <div class="col-sm-6">
+                        <label for="ganhos" class="form-label">Insira os ganhos provenientes destes
+                            investimentos</label>
+                        <input type="text" class="form-control" id="ganhos" oninput="formatarMoeda(this)"
+                            placeholder="Insira aqui seus ganhos" value="" required>
+                        <div class="invalid-feedback">
+                            Por favor, insira seus ganhos!
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="row g-3 mb-2">
+                <div class="col col-md-6 mb-3">
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <button class="btn btn-primary w-100 btn-md" type="submit" id="btnRegistro">Prosseguir</button>
+                    </div>
+                </div>
+            </div>
+
+
+        </main>
+
+        <footer>
+            <div class=" col-md-6 offset-md-8 fixed-bottom mt-3 mb-3">
+                <div class="row"><span class="fs-4 mt-auto">
+                        <h3>Falta pouco para começar sua jornada</h3>
+                    </span></div>
+                <div class="progress" role="progressbar" aria-label="progress bar" aria-valuenow="" aria-valuemin="0"
+                    aria-valuemax="100" style="height: 7px; width: 65%;">
+                    <div class="progress-bar" style="width: 30%;"></div>
+                </div>
+
+            </div>
+
+        </footer>
+    </div>
+    <script src="../assets/js/cadastro_ganhos.js"></script>
+    <script>
+        const hasInvestments = document.getElementById('ativos');
+
+        const campoAdicional = document.getElementById('campoAdicional');
+
+        hasInvestments.addEventListener('change', function () {
+            if (hasInvestments.value == 'Sim') {
+                campoAdicional.style.display = 'block';
+            } else {
+                campoAdicional.style.display = 'none';
+            }
+        })
+
+        const currency = document.querySelector("#currency");
+
+        const formatter = new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 2,
+        });
+
+        function formatarMoeda(input) {
+            let valor = input.value.replace(/\D/g, '');
+
+            input.value = formatter.format(valor / 100);
+        }
+
+        function init() {
+            const forms = document.querySelectorAll('.needs-validation');
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+
+                    }
+
+
+                    form.classList.add('was-validated')
+
+                    const salario = document.getElementById('currency').value; // Valor do campo "salario"
+                    const bonus = document.getElementById('bonus').value;
+                    const invest = document.getElementById('ativos').value // Valor do campo "bonus"
+                    const ativos = document.getElementById('ganhos').value;
+                    console.log(salario)
+                    console.log(bonus)
+                    console.log(invest)
+                    console.log(ativos)
+
+                    let jsonBody = data.map(function (user) {
+
+                    })
+                    let objIncoming = {
+                        incomings: {
+                            salarios: salario,
+                            bonus: bonus,
+                            hasInvestments: invest === 'Sim' ? true : false,
+                            ativos: invest === 'Sim' ? ativos : " "
+                        }
+                    }
+
+                    registerIncoming(objIncoming);
+                }, false)
+            })
+
+        }
+        async function assignIncoming() {
+            try {
+                const response = await fetch(apiPath);
+                const users = await response.json();
+
+                for (const user of users) {
+                    if (!user.incomings) {
+                        user.incoming = {
+                            salarios: salario,
+                            bonus: bonus,
+                            hasInvestments: invest === 'Sim' ? true : false,
+                            ativos: invest === 'Sim' ? ativos : " "
+                        }
+
+                        await updateUser(user);
+                        console.log('Atribuido incoming ao usuario: ', user);
+                        break; 
+                    }
+                }
+            } catch(error) {
+               console.error('Erro ao atribuir incoming ao usuario: ', error);
+            }
+        }
+
+        async function updateUser(user){
+            try{
+                await fetch(apiPath, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(user)
+                });
+                
+            } catch (error){
+                console.error("Erro no update do usuário", error);
+            }
+        }
+
+        function deleteUser(id) {
+            fetch(apiPath + 'id', {
+                method: 'DELETE',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('usuario deletado', data);
+                })
+                .catch(error => {
+                    console.error('erro ao deletar usuário', error);
+                })
+
+            console.log(`${apiPath}/${id}`);
+        }
+
+    </script>
+</body>
+
+
+
+</html>

@@ -1,0 +1,132 @@
+04.) Fazer as operações indicadas mediante uso de complemento de dois: 
+ DICAS: Levar todas as representações para binário, com a mesma quantidade de bits, 
+              a menor necessária para acomodar a parte significativa e incluir o sinal. 
+              Substituir apenas os subtraendos pelos complementos equivalentes e somar. 
+              Voltar os resultados às bases originais. 
+ 
+Exemplo: 
+  
+32(4) - 1001(2) = X(8) 
+ 
+1110(2) - 1001(2)  = 1110 + C2,4(1001) = 1110 + 0111 = (1) 0101(2) = 5(8)  
+ 
+----------------------------------------------------------------------------------------
+ 
+04a.) manualmente                           
+ 
+a.) 11001(2)   -  1101(2) = X(2)           (OBS: Colocar do mesmo tamanho, primeiro) 
+b.) 101,1101(2)   - 10,01(2) = X(2) (OBS.: Alinhar as vírgulas, primeiro, antes de operar) 
+c.)312(4)   -    231(4) = X(4) 
+d.)376(8)   -    267(8) = X(8) 
+e.)7D2(16)  -  A51(16) = X(16) 
+
+----------------------------------------------------------------------------------------
+
+
+
+a.) 11001(2) - 1101(2)  
+
+Primeiro, igualamos o número de bits:
+
+11001 -> 11001  
+1101 -> 01101  
+
+Fazemos o complemento de dois do segundo número (01101):  
+
+Invertemos os bits -> 10010  
+Somamos 1 -> 10011  
+
+Agora somamos os dois números:  
+
+11001 + 10011 = 101100  
+
+Descartamos o bit mais à esquerda, então o resultado é:  
+
+01100(2) = 12(10)  
+
+----------------------------------------------------------------------------------------
+
+b.) 101,1101(2) - 10,01(2)  
+
+Primeiro, igualamos o número de bits e alinhamos as vírgulas:  
+
+101,1101 -> 101,1101  
+10,01 -> 010,0100  
+
+Fazemos o complemento de dois do segundo número (010,0100):  
+
+Invertemos os bits -> 101,1011  
+Somamos 1 -> 101,1100  
+
+Agora somamos os dois números:  
+
+101,1101 + 101,1100 = 1011,1001
+
+Resultado:  
+
+1011,1001(2) 
+
+----------------------------------------------------------------------------------------
+c.) 312(4) - 231(4)
+
+Primeiro, convertemos os números para binário:
+
+312(4) -> 110110  
+231(4) -> 101101  
+
+Fazemos o complemento de dois do segundo número (101101):  
+
+Invertemos os bits -> 010010  
+Somamos 1 -> 010011  
+
+Agora somamos os dois números: 
+
+110110 + 010011 = 001001  
+
+Resultado:
+
+001001(2) = 21(4)  
+
+----------------------------------------------------------------------------------------
+
+d.) 376(8) - 267(8)  
+
+Primeiro, convertemos os números para binário:
+
+376(8) -> 011111110  
+267(8) -> 010110111  
+
+Fazemos o complemento de dois do segundo número (010110111):  
+
+Invertemos os bits -> 101001000  
+Somamos 1 -> 101001001  
+
+Agora somamos os dois números:  
+
+011111110 + 101001001 = 0010001111  
+
+Resultado:
+
+0010001111(2) = 417(8)  
+
+----------------------------------------------------------------------------------------
+
+e.) 7D2(16) - A51(16)
+
+Primeiro, convertemos os números para binário:
+
+7D2(16) -> 011111010010  
+A51(16) -> 101001010001  
+
+Fazemos o complemento de dois do segundo número (101001010001):  
+
+Invertemos os bits -> 010110101110  
+Somamos 1 -> 010110101111  
+
+Agora somamos os dois números:  
+
+011111010010 + 010110101111 = 110101111111  
+
+Resultado:  
+
+110101111111(2) = D7F(16)
