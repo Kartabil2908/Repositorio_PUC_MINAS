@@ -1,3 +1,4 @@
+
 import java.util.Scanner;
 
 class Palindromo
@@ -41,7 +42,3 @@ class Palindromo
         
     }
 }
-
-
-
-
