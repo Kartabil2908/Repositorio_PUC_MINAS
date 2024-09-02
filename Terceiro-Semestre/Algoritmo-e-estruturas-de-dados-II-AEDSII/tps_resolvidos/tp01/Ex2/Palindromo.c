@@ -1,23 +1,20 @@
 #include <stdio.h>
 #include <string.h>
 
-int verificarPalindromoRecursivo(char *palavra, int esquerda, int direita) {
-
-    if (esquerda >= direita) {
-        return 1; // É um palíndromo
-    }
-
-    if (palavra[esquerda] != palavra[direita]) {
-        return 0; // Não é um palíndromo
-    }
-
-    return verificarPalindromoRecursivo(palavra, esquerda + 1, direita - 1);
-}
-
 void verificarPalindromo(char *palavra) {
+    int i, j;
     int tamanho = strlen(palavra);
+    int ehPalindromo = 1; 
 
-    if (verificarPalindromoRecursivo(palavra, 0, tamanho - 1)) {
+  
+    for (i = 0, j = tamanho - 1; i < j; i++, j--) {
+        if (palavra[i] != palavra[j]) {
+            ehPalindromo = 0; 
+            break;
+        }
+    }
+
+    if (ehPalindromo) {
         printf("SIM\n");
     } else {
         printf("NAO\n");
@@ -26,20 +23,21 @@ void verificarPalindromo(char *palavra) {
 
 int main() {
     char palavra[1000]; 
-    int continuar = 1;
 
-    while (continuar) {
+    while (1) {
         fgets(palavra, sizeof(palavra), stdin);
 
+      
         palavra[strcspn(palavra, "\n")] = '\0';
 
-
         if (strcmp(palavra, "FIM") == 0) {
-            continuar = 0;
-        } else {
-            verificarPalindromo(palavra);
+            break;
         }
+
+        verificarPalindromo(palavra);
     }
 
     return 0;
 }
+
+
