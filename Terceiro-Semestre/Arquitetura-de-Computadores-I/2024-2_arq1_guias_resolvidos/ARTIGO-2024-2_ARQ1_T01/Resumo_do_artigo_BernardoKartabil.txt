@@ -1,0 +1,23 @@
+Nome: Bernardo Ladeira Kartabil
+Matrícula: 1449304
+
+
+
+Resumo:
+
+ CPLDs e suas Aplicações na Automação Industrial
+Os CPLDs (Dispositivos Complexos de Lógica Programável) são dispositivos fundamentais na automação industrial, oferecendo flexibilidade e capacidade de reprogramação, o que é essencial para aplicações que necessitam de ajustes frequentes. Eles são amplamente utilizados no controle de motores e sensores, onde a rapidez e a precisão nas respostas são cruciais.
+
+Uma das principais vantagens dos CPLDs é sua arquitetura simples em comparação com os FPGAs (Field-Programmable Gate Arrays). Essa simplicidade proporciona tempos de resposta mais rápidos e previsíveis, tornando-os ideais para sistemas que exigem controle em tempo real.
+
+Além disso, os CPLDs se destacam em relação a outras tecnologias, como os ASICs (Application-Specific Integrated Circuits) e SPLDs (Simple Programmable Logic Devices). Embora os CPLDs tenham uma capacidade lógica menor do que os FPGAs, eles oferecem uma excelente relação entre custo, consumo de energia e flexibilidade, o que os torna uma opção viável para muitas aplicações.
+
+O uso de CPLDs e FPGAs na indústria está em crescimento, impulsionado pela demanda por sistemas mais personalizados e eficientes. Com os avanços tecnológicos, os CPLDs continuam a desempenhar um papel importante na automação industrial, contribuindo para a inovação e a melhoria dos processos produtivos.
+
+
+Referências
+
+FREITAS, Tiago Tobias; PASQUALINOTO, Thiago Luiz; LEÃO, Juliano Carlos. O CPLD (Dispositivo Complexo de Lógica Programável) aplicado em automação industrial.
+SANTOS, Carlos; LIMA, Fernanda. Comparação entre Dispositivos Lógicos Programáveis: Uma Análise de CPLD e FPGA em Aplicações de Automação Industrial.
+
+PEREIRA, Ana. Estudo sobre a aplicação de ASICs em sistemas embarcados. In: ENCONTRO NACIONAL DE TECNOLOGIA, 10., 2024, São Paulo.
