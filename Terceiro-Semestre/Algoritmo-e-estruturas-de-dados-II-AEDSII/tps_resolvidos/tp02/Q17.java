@@ -210,14 +210,28 @@ class Pokemon {
         System.out.printf("] - %.1fkg - %.1fm - %d%% - %b - %d gen] - %s%n",
                 this.weight, this.height, this.captureRate,
                 this.isLegendary, this.generation, dataFormatada);
-    }
+   }
 
+
+
+   public static int comparePokemon(Pokemon p1, Pokemon p2) {
+    // Comparar pela geração
+    int generationComparison = Integer.compare(p1.getGeneration(), p2.getGeneration());
+    if (generationComparison != 0) {
+        return generationComparison; // Retorna a comparação de geração
+    }
+    // Se as gerações forem iguais, comparar pelo nome
+    return p1.getName().compareTo(p2.getName());
+}
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------
 
 // METODOS GERAIS - FORA DA CLASSE POKEMON
 class Geral {
+
+    public static int numComparacoes = 0;
+    public static int numMovimentacoes = 0;
 
     public String[] separarTresStrings(String teste) {
 
@@ -448,7 +462,7 @@ class Geral {
 
 
     public void ordenarPokemonsPorNome(Pokemon[] pokemons) {
-        String matricula = "1449304";
+   
         long tempoInicio = System.nanoTime();
 
         int comparacoes = 0;
@@ -480,7 +494,42 @@ class Geral {
         long tempoFim = System.nanoTime();
         long tempoExecucao = tempoFim - tempoInicio;
 
-        criarLog(tempoExecucao, comparacoes, movimentacoes, "sequencial.txt");
+        criarLog(tempoExecucao, comparacoes, movimentacoes, "selecao.txt");
+    }
+
+    public void ordenarPokemonsPorNomeParcial(Pokemon[] pokemons) {
+        long tempoInicio = System.nanoTime();
+    
+        int comparacoes = 0;
+        int movimentacoes = 0;
+    
+        int n = Math.min(pokemons.length, 10); // Limitar a n ao mínimo entre o tamanho do array e K (10)
+        for (int i = 0; i < n - 1; i++) {
+            // Encontrar o índice do menor nome
+            int minIndex = i;
+    
+            for (int j = i + 1; j < n; j++) {
+                if (pokemons[j] != null && pokemons[minIndex] != null) {
+                    comparacoes++;
+                    if (pokemons[j].getName().compareTo(pokemons[minIndex].getName()) < 0) {
+                        minIndex = j;
+                    }
+                }
+            }
+    
+            // Trocar o Pokémon com o menor nome encontrado com o Pokémon na posição i
+            if (minIndex != i) {
+                Pokemon temp = pokemons[i];
+                pokemons[i] = pokemons[minIndex];
+                pokemons[minIndex] = temp;
+                movimentacoes += 3; // CADA SWAP SÃO 3 MOVIMENTAÇÕES
+            }
+        }
+    
+        long tempoFim = System.nanoTime();
+        long tempoExecucao = tempoFim - tempoInicio;
+    
+        criarLog(tempoExecucao, comparacoes, movimentacoes, "selecao.txt");
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -520,7 +569,6 @@ class Geral {
 
         criarLog(tempoExecucao, comparacoes, movimentacoes, "insercao.txt");
     }
-
     // ---------------------------------------------------------------------------------------------------------------------------------------------
 
     public void countingSort(Pokemon[] pokemons, int totalPokemons) {
@@ -586,81 +634,218 @@ class Geral {
         criarLog(tempoExecucao, totalComparacoes, totalMovimentacoes, "countingsort.txt");
     }
 
-    public void ordenarPokemonsPorTipo(Pokemon[] pokemons) {
-        int movimentacoes = 0;
-        int comparacoes = 0;
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    public void mergesort(Pokemon[] pokemons) {
         long tempoInicio = System.nanoTime();
 
-        // Chama o método mergesort
-        pokemons = mergesort(pokemons);
+        int comparacoes = 0;
+        int movimentacoes = 0;
+
+        mergesortRecursive(pokemons, 0, pokemons.length - 1);
 
         long tempoFim = System.nanoTime();
         long tempoExecucao = tempoFim - tempoInicio;
 
-        criarLog(tempoExecucao, comparacoes, movimentacoes, "matrícula_mergesort.txt");
+        criarLog(tempoExecucao, comparacoes, movimentacoes, "mergesort.txt");
     }
 
-    public Pokemon[] mergesort(Pokemon[] pokemons) {
-        if (pokemons.length <= 1) {
-            return pokemons; // Retorna se o array tiver 0 ou 1 elemento
+    private void mergesortRecursive(Pokemon[] pokemons, int esquerda, int direita) {
+        if (esquerda < direita) {
+            int meio = (esquerda + direita) / 2;
+
+            // Chama recursivamente para dividir as duas metades
+            mergesortRecursive(pokemons, esquerda, meio);
+            mergesortRecursive(pokemons, meio + 1, direita);
+
+            // Merges as duas metades
+            merge(pokemons, esquerda, meio, direita);
         }
-
-        int meio = pokemons.length / 2;
-        Pokemon[] esquerda = new Pokemon[meio];
-        Pokemon[] direita;
-
-        if (pokemons.length % 2 == 0) {
-            direita = new Pokemon[meio];
-        } else {
-            direita = new Pokemon[meio + 1];
-        }
-
-        // Divide o array em dois subarrays
-        System.arraycopy(pokemons, 0, esquerda, 0, meio);
-        System.arraycopy(pokemons, meio, direita, 0, direita.length);
-
-        // Chama recursivamente o mergesort
-        esquerda = mergesort(esquerda);
-        direita = mergesort(direita);
-
-        // Mescla os subarrays ordenados
-        return merge(esquerda, direita);
     }
 
-    public Pokemon[] merge(Pokemon[] esquerda, Pokemon[] direita) {
-        Pokemon[] resultado = new Pokemon[esquerda.length + direita.length];
-        int i = 0, j = 0, k = 0;
+    private void merge(Pokemon[] pokemons, int esquerda, int meio, int direita) {
 
-        while (i < esquerda.length && j < direita.length) {
-            // Acessa o primeiro tipo de cada Pokémon (assumindo que não está vazio)
-            String tipoEsquerda = esquerda[i].getTypes().get(0); // Obter o primeiro tipo da lista
-            String tipoDireita = direita[j].getTypes().get(0); // Obter o primeiro tipo da lista
+        long tempoInicio = System.nanoTime();
 
-            // Compara os tipos e, em caso de empate, compara os nomes
-            if (tipoEsquerda.compareTo(tipoDireita) < 0 ||
-                    (tipoEsquerda.equals(tipoDireita) &&
-                            esquerda[i].getName().compareTo(direita[j].getName()) < 0)) {
-                resultado[k++] = esquerda[i++];
-            } else {
-                resultado[k++] = direita[j++];
+        // Calcula os tamanhos das sublistas
+        int n1 = meio - esquerda + 1;
+        int n2 = direita - meio;
+        int comparacoes = 0;
+        int movimentacoes = 0;
+
+        // Cria as listas temporárias
+        Pokemon[] esquerdaArray = new Pokemon[n1];
+        Pokemon[] direitaArray = new Pokemon[n2];
+
+        // Copia os dados para as listas temporárias
+        for (int i = 0; i < n1; i++)
+            esquerdaArray[i] = pokemons[esquerda + i];
+        for (int j = 0; j < n2; j++)
+            direitaArray[j] = pokemons[meio + 1 + j];
+
+        // Merges as listas temporárias
+
+        int i = 0, j = 0;
+        int k = esquerda;
+
+        while (i < n1 && j < n2) {
+            // Comparar os tipos (assumindo que o primeiro tipo é o mais importante)
+            comparacoes++; // contagem de comparações
+            if (esquerdaArray[i] != null && direitaArray[j] != null) {
+                if (esquerdaArray[i].getTypes().get(0).compareTo(direitaArray[j].getTypes().get(0)) < 0) {
+                    pokemons[k] = esquerdaArray[i];
+                    i++;
+                } else if (esquerdaArray[i].getTypes().get(0).compareTo(direitaArray[j].getTypes().get(0)) > 0) {
+                    pokemons[k] = direitaArray[j];
+                    j++;
+                } else {
+                    // Se os tipos forem iguais, ordenar pelo nome
+                    if (esquerdaArray[i].getName().compareTo(direitaArray[j].getName()) < 0) {
+                        pokemons[k] = esquerdaArray[i];
+                        i++;
+                    } else {
+                        pokemons[k] = direitaArray[j];
+                        j++;
+                    }
+                }
+            }
+            k++;
+            movimentacoes++; // contagem de movimentações
+        }
+
+        // Copia os elementos restantes da esquerda
+        while (i < n1) {
+            pokemons[k] = esquerdaArray[i];
+            i++;
+            k++;
+            movimentacoes++;
+        }
+
+        // Copia os elementos restantes da direita
+        while (j < n2) {
+            pokemons[k] = direitaArray[j];
+            j++;
+            k++;
+            movimentacoes++;
+        }
+
+        long tempoFim = System.nanoTime();
+        long tempoExecucao = tempoFim - tempoInicio;
+
+        criarLog(tempoExecucao, comparacoes, movimentacoes, "mergesort.txt");
+    }
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------
+
+    public void quickSort(Pokemon[] pokemons, int esquerda, int direita) {
+        if (esquerda < direita) {
+            int pivoIndex = particao(pokemons, esquerda, direita);
+            quickSort(pokemons, esquerda, pivoIndex - 1);
+            quickSort(pokemons, pivoIndex + 1, direita);
+        }
+    }
+
+    
+    public int particao(Pokemon[] pokemons, int esquerda, int direita) {
+        Pokemon pivo = pokemons[direita];
+        int i = esquerda - 1;
+
+        for (int j = esquerda; j < direita; j++) {
+            if (Pokemon.comparePokemon(pokemons[j], pivo) < 0) {
+                i++;
+                swap(pokemons, i, j);
             }
         }
+        swap(pokemons, i + 1, direita);
+        return i + 1;
+    }
+    
 
-        // Adiciona os elementos restantes da esquerda
-        while (i < esquerda.length) {
-            resultado[k++] = esquerda[i++];
-        }
-
-        // Adiciona os elementos restantes da direita
-        while (j < direita.length) {
-            resultado[k++] = direita[j++];
-        }
-
-        return resultado;
+    public void swap(Pokemon[] pokemonArray, int i, int j) {
+        Pokemon temp = pokemonArray[i];
+        pokemonArray[i] = pokemonArray[j];
+        pokemonArray[j] = temp;
+        numMovimentacoes += 3;
     }
 
-}
 
+    
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------
+
+    public void heapsortPokemonsPorAltura(Pokemon[] pokemons) {
+        long tempoInicio = System.nanoTime();
+    
+        int comparacoes = 0;
+        int movimentacoes = 0;
+    
+        int n = pokemons.length;
+    
+        // Construir o heap
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            ConstruirHeapInvertido(pokemons, n, i);
+        }
+    
+        // Um a um, extrair um elemento do heap
+        for (int i = n - 1; i > 0; i--) {
+            // Mover a raiz atual para o final
+            Pokemon temp = pokemons[0];
+            pokemons[0] = pokemons[i];
+            pokemons[i] = temp;
+            movimentacoes += 3; // Cada swap são 3 movimentações
+    
+            // Chamar ConstruirHeapInvertido na raiz do heap reduzido
+            ConstruirHeapInvertido(pokemons, i, 0);
+        }
+    
+        long tempoFim = System.nanoTime();
+        long tempoExecucao = tempoFim - tempoInicio;
+    
+        criarLog(tempoExecucao, comparacoes, movimentacoes, "heapsort.txt");
+    }
+    
+    private void ConstruirHeapInvertido(Pokemon[] pokemons, int n, int i) {
+        int maior = i; // Inicializar o maior como raiz
+        int esquerda = 2 * i + 1; // índice do filho esquerdo
+        int direita = 2 * i + 2; // índice do filho direito
+    
+        // Verifica se o filho esquerdo existe e é maior que a raiz
+        if (esquerda < n && comparePokemons(pokemons[esquerda], pokemons[maior]) > 0) {
+            maior = esquerda;
+        }
+    
+        // Verifica se o filho direito existe e é maior que o maior até agora
+        if (direita < n && comparePokemons(pokemons[direita], pokemons[maior]) > 0) {
+            maior = direita;
+        }
+    
+        // Se o maior não for a raiz
+        if (maior != i) {
+            Pokemon swap = pokemons[i];
+            pokemons[i] = pokemons[maior];
+            pokemons[maior] = swap;
+    
+            // Chama ConstruirHeapInvertido recursivamente na subárvore afetada
+            ConstruirHeapInvertido(pokemons, n, maior);
+        }
+    }
+    
+    // Função de comparação
+    private int comparePokemons(Pokemon p1, Pokemon p2) {
+        // Comparar alturas
+        if (p1.getHeight() != p2.getHeight()) {
+            return Double.compare(p1.getHeight(), p2.getHeight());
+        }
+        // Em caso de empate, comparar nomes
+        return p1.getName().compareTo(p2.getName());
+    }
+
+
+
+}
     // ---------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -790,36 +975,34 @@ class Geral {
 }*/
 
 
-/*public class Q09
-{
-    public static void main(String[] args) throws FileNotFoundException, ParseException 
-    {
+/*public class Q09 {
+    public static void main(String[] args) throws FileNotFoundException, ParseException {
         Scanner leitura = new Scanner(System.in);
         int[] identrada = new int[200];
 
-        // lê o csv
         Pokemon[] pokemons = new Pokemon[801];
         Geral comGeral = new Geral();
         comGeral.lerCsv(pokemons);
 
-
-        int qtdIds = comGeral.lerIdsEntrada(leitura, identrada); // Lê os ids
+        int qtdIds = comGeral.lerIdsEntrada(leitura, identrada);
 
         Pokemon[] pokemonsSelecionados = new Pokemon[qtdIds];
         comGeral.atribuirPokemons(pokemons, pokemonsSelecionados, identrada);
 
-        comGeral.heapSortHeight(pokemonsSelecionados);;
+        // Ordena os Pokémon pelo atributo altura
+        comGeral.heapsortPokemonsPorAltura(pokemonsSelecionados);
 
-        for(int i = 0; i < qtdIds; i++)
-        {
-            if(pokemonsSelecionados[i] != null){
-            pokemonsSelecionados[i].printarPokemon();
+        for (int i = 0; i < qtdIds; i++) {
+            if (pokemonsSelecionados[i] != null) {
+                pokemonsSelecionados[i].printarPokemon();
             }
         }
 
-
+        leitura.close();
     }
 }*/
+
+
 
 /*public class Q11
 {
@@ -851,7 +1034,7 @@ class Geral {
     }
 }*/
 
-public class Q13
+/*public class Q13
 {
     public static void main(String[] args) throws FileNotFoundException, ParseException {
         Scanner leitura = new Scanner(System.in);
@@ -869,7 +1052,7 @@ public class Q13
         comGeral.atribuirPokemons(pokemons, pokemonsSelecionados, identrada);
 
         comGeral.mergesort(pokemonsSelecionados);
-        ;
+        
 
         for (int i = 0; i < qtdIds; i++) {
             if (pokemonsSelecionados[i] != null) {
@@ -879,5 +1062,99 @@ public class Q13
 
 
     }
-}
+}*/
+
+/*public class Q14 {
+    public static void main(String[] args) throws FileNotFoundException, ParseException {
+        Scanner leitura = new Scanner(System.in);
+        int[] identrada = new int[200];
+
+        // lê o csv
+        Pokemon[] pokemons = new Pokemon[801];
+        Geral comGeral = new Geral();
+        comGeral.lerCsv(pokemons);
+
+        int qtdIds = comGeral.lerIdsEntrada(leitura, identrada); // Lê os ids
+
+        Pokemon[] pokemonsSelecionados = new Pokemon[qtdIds];
+        comGeral.atribuirPokemons(pokemons, pokemonsSelecionados, identrada);
+
+        comGeral.radixSortByAbilities(pokemonsSelecionados); // Chama o método de ordenação Radix Sort
+
+        for (int i = 0; i < qtdIds; i++) {
+            if (pokemonsSelecionados[i] != null) {
+                pokemonsSelecionados[i].printarPokemon();
+            }
+        }
+    }
+}*/
+
+
+/*public class Q15 {
+    public static void main(String[] args) throws FileNotFoundException, ParseException {
+        Scanner leitura = new Scanner(System.in);
+        int[] identrada = new int[200];
+
+  
+        Pokemon[] pokemons = new Pokemon[801];
+        Geral comGeral = new Geral();
+        comGeral.lerCsv(pokemons);
+
+
+        int qtdIds = comGeral.lerIdsEntrada(leitura, identrada);
+
+        // Cria um array para os Pokémon selecionados
+        Pokemon[] pokemonsSelecionados = new Pokemon[qtdIds];
+        comGeral.atribuirPokemons(pokemons, pokemonsSelecionados, identrada);
+
+        // Ordena apenas os primeiros 10 Pokémon selecionados
+        comGeral.ordenarPokemonsPorNome(pokemonsSelecionados);
+
+        // Limita a saída para no máximo 10 Pokémon
+        for (int i = 0; i < Math.min(qtdIds, 10); i++) {
+            if (pokemonsSelecionados[i] != null) {
+                pokemonsSelecionados[i].printarPokemon();
+            }
+        }
+
+        leitura.close(); // Fechar o scanner
+    }
+}*/
+
+
+
+
+
+/*public class Q18 
+{
+    public static void main(String[] args) throws FileNotFoundException, ParseException 
+    {
+        Scanner leitura = new Scanner(System.in);
+        int[] identrada = new int[200];
+
+        // lê o csv
+        Pokemon[] pokemons = new Pokemon[801];
+        Geral comGeral = new Geral();
+        comGeral.lerCsv(pokemons);
+
+        int qtdIds = comGeral.lerIdsEntrada(leitura, identrada); // Lê os ids
+
+        Pokemon[] pokemonsSelecionados = new Pokemon[qtdIds];
+        comGeral.atribuirPokemons(pokemons, pokemonsSelecionados, identrada);
+
+        // Ordena apenas os primeiros 10 Pokémons selecionados
+        comGeral.quickSort(pokemonsSelecionados, 0, pokemonsSelecionados.length - 1);
+
+        // Limita a saída para no máximo 10 Pokémons
+        for (int i = 0; i < Math.min(qtdIds, 10); i++)
+        {
+            if (pokemonsSelecionados[i] != null) {
+                pokemonsSelecionados[i].printarPokemon();
+            }
+        }
+
+        leitura.close(); // Fechar o scanner
+    }
+}*/
+
 
