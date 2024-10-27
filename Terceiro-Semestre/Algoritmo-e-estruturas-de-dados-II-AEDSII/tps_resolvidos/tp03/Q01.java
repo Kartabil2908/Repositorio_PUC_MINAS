@@ -157,8 +157,7 @@ class Pokemon {
         this.captureDate = captureDate;
     }
 
-    public String FormatarData()
-    {
+    public String FormatarData() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String dataFormatada;
         if (this.captureDate != null) {
@@ -208,19 +207,17 @@ class Pokemon {
         System.out.printf("] - %.1fkg - %.1fm - %d%% - %b - %d gen] - %s%n",
                 this.weight, this.height, this.captureRate,
                 this.isLegendary, this.generation, dataFormatada);
-   }
-
-
-
-   public static int comparePokemon(Pokemon p1, Pokemon p2) {
-    // Comparar pela geração
-    int generationComparison = Integer.compare(p1.getGeneration(), p2.getGeneration());
-    if (generationComparison != 0) {
-        return generationComparison; // Retorna a comparação de geração
     }
-    // Se as gerações forem iguais, comparar pelo nome
-    return p1.getName().compareTo(p2.getName());
-}
+
+    public static int comparePokemon(Pokemon p1, Pokemon p2) {
+        // Comparar pela geração
+        int generationComparison = Integer.compare(p1.getGeneration(), p2.getGeneration());
+        if (generationComparison != 0) {
+            return generationComparison; // Retorna a comparação de geração
+        }
+        // Se as gerações forem iguais, comparar pelo nome
+        return p1.getName().compareTo(p2.getName());
+    }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -252,7 +249,7 @@ class Geral {
         String[] dadosAdicionais = separarStringHabilidades[1].split(","); // \' a aspa simples ('), \" a aspa dupla
         // ("), \\\\ a barra invertida (\)
 
-        return new String[]{
+        return new String[] {
                 primeiraString[0], // ID
                 primeiraString[1], // Generation
                 primeiraString[2], // Nome
@@ -352,7 +349,6 @@ class Geral {
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------
 
-
     public int lerIdsEntrada(Scanner leitura, int[] identrada) {
         String texto = "";
         int posicao = 0;
@@ -371,7 +367,6 @@ class Geral {
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------
 
-
     public int lerNomesEntrada(Scanner leitura, String[] nameEntrada) {
         String nome = "";
         int posicao = 0;
@@ -386,88 +381,240 @@ class Geral {
         }
         return posicao; // Retorna a quantidade de nomes lidos
     }
-    
 
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------
 
-class listaPokemon
-{
-    Pokemon[] pokemons;
-    int pokemonsGuardados; 
+// No início de cada método ocorre uma verificação se ele poderá  ser executado.
+// Obs: pokemonsGuardados não é o tamanho do array, mas sim o número de pokemons que foram guardados na lista.
 
-    listaPokemon(int tamanho)
-    {
+
+
+class listaPokemon {
+    Pokemon[] pokemons; // pokemons da lista;
+    int pokemonsGuardados; // a quantidade de pokemons guardados dentro do array, assim, previne da lista ter buracos
+
+    listaPokemon(int tamanho) {
         this.pokemons = new Pokemon[tamanho];
         this.pokemonsGuardados = 0;
     }
 
-    void inserirInicio(Pokemon pokemon)
-    {
+    void inserirInicio(Pokemon pokemon) {
+        if (this.pokemonsGuardados >= this.pokemons.length) {
+            System.err.println("Erro: Array está cheio");
 
-        if(this.pokemonsGuardados == this.pokemons.length)
-        {
-            System.err.println("Erro: Array está cheio, impossível inserir no início");
-        }else
-        {
-            if(this.pokemons[0] == null)
-            {
-                this.pokemons[0] = pokemon;
-                pokemonsGuardados++;
+        } else {
 
-            }else
-            {
-
-                for(int i =pokemonsGuardados; i >0; i--)
-                {
-                    this.pokemons[pokemonsGuardados] = this.pokemons[pokemonsGuardados - 1];
-                }
-
-                this.pokemons[0] = pokemon;
-                pokemonsGuardados++;
-                
+            // Move todos os elementos uma posição para frente
+            for (int i = this.pokemonsGuardados; i > 0; i--) {
+                this.pokemons[i] = this.pokemons[i - 1]; // como o i está na posição à frente, é atribuído o i - 1;
             }
+
+            this.pokemons[0] = pokemon;
+            this.pokemonsGuardados++;
         }
 
-        
     }
 
-    void inserirPosicao(Pokemon pokemon, int posicao)
-    {
-        if(this.pokemonsGuardados == 0)
-        {
+    void inserirFim(Pokemon pokemon) {
+        if (this.pokemonsGuardados >= this.pokemons.length) {
+            System.err.println("Erro: Array está cheio");
+        } else {
+            this.pokemons[this.pokemonsGuardados++] = pokemon; // PRIMEIRO ATRIBUI, DEPOIS INCREMENTA
+        }
+
+    }
+
+    void inserirPosicao(Pokemon pokemon, int pos) {
+        if (this.pokemonsGuardados >= this.pokemons.length) {
+            System.err.println("Erro: Array está cheio");
+
+        } else if (pos < 0 || pos > this.pokemonsGuardados) {
+
+            System.err.println("Erro: Posição inválida");
+        } else {
+
+            // Move os elementos da posição em diante uma posição para frente
+            for (int i = this.pokemonsGuardados; i > pos; i--) {
+                this.pokemons[i] = this.pokemons[i - 1];
+            }
+
+            this.pokemons[pos] = pokemon;
+            this.pokemonsGuardados++;
+        }
+    }
+
+    Pokemon removerInicio() {
+        if (this.pokemonsGuardados == 0) {
             System.err.println("Erro: Array vazio");
+            return null;
+        }
 
-        }else
-        {
-            if(posicao > this.pokemonsGuardados)
-            {
-                System.err.println("Erro: posicao maior que o limite guardado");
-            }else
-            {
-                if(this.pokemonsGuardados == this.pokemons.length)
-                {
-                    System.err.println("Erro: Array cheio");
-                }else
-                {
-                    int i = 1;
+        Pokemon PokemonRemovido = this.pokemons[0];
 
-                    while(this.pokemons[posicao] != null)
-                    {
-                        this.pokemons[pokemonsGuardados + i] = this.pokemonsGuardados;
-                    }
+        // Move todos os elementos uma posição para trás
+        for (int i = 0; i < this.pokemonsGuardados - 1; i++) {
+            this.pokemons[i] = this.pokemons[i + 1];
+        }
+
+        this.pokemonsGuardados--;
+        return PokemonRemovido;
+    }
+
+    Pokemon removerFim() {
+        if (this.pokemonsGuardados == 0) {
+            System.err.println("Erro: Array vazio");
+            return null;
+        }
+
+        return this.pokemons[--this.pokemonsGuardados]; // PRIMEIRO DECREMENTA, DEPOIS ATRIBUI
+
+    }
+
+    Pokemon removerPosicao(int pos) {
+        if (this.pokemonsGuardados == 0) {
+            System.err.println("Erro: Array vazio");
+            return null;
+        }
+
+        if (pos < 0 || pos >= this.pokemonsGuardados) {
+            System.err.println("Erro: Posição inválida");
+            return null;
+        }
+
+        Pokemon PokemonRemovido = this.pokemons[pos];
+
+        // Move os elementos após a posição uma posição para trás
+        for (int i = pos; i < this.pokemonsGuardados - 1; i++) {
+            this.pokemons[i] = this.pokemons[i + 1];
+        }
+
+        this.pokemonsGuardados--;
+        return PokemonRemovido;
+    }
+
+    void mostrar() {
+        for (int i = 0; i < this.pokemonsGuardados; i++) {
+            System.out.printf("[%d] ", i);
+            this.pokemons[i].printarPokemon();
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------------------
+
+public class Q01 {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Geral geral = new Geral();
+
+        // ler os pokemons do arquivo
+        Pokemon[] PokemonsTotal = new Pokemon[805];
+        try {
+            geral.lerCsv(PokemonsTotal);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // Cria uma lista sequencial
+        listaPokemon lista = new listaPokemon(805);
+
+        // Lê os ids dos pokemons
+        int[] ids = new int[1000];
+        int numIds = geral.lerIdsEntrada(scanner, ids);
+
+        // Coloca o pokemon na lista
+        for (int i = 0; i < numIds; i++) {
+            for (Pokemon p : PokemonsTotal) {
+                if (p != null && p.getId() == ids[i]) {
+                    lista.inserirFim(p);
+                    break;
                 }
             }
         }
-        
-    }
-} 
 
-public class Q01
-{
-    public static void main(String[] args) 
-    {
+
+
+        // SEGUNDA PARTE DA QUESTÃO
         
+        String line;
+        int numeroDeProcessos;
+
+        numeroDeProcessos = scanner.nextInt();
+
+        for (int i = 0; i < numeroDeProcessos; i++) {
+            line = scanner.nextLine();
+
+            // separa o comando e o ID pelo espaço;
+            // substring[0] = comando da lista
+            // substring [1] = ID do pokemon
+
+            String[] subString = line.split(" "); // esse comando serve pra identificar se é II,IF,I*,RI,RF,R*
+
+            switch (subString[0]) { // Switch para os casos
+                case "II": {
+                    int id = Integer.parseInt(subString[1]);
+                    for (Pokemon p : PokemonsTotal) {
+                        if (p != null && p.getId() == id) {
+                            lista.inserirInicio(p);
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case "IF": {
+                    int id = Integer.parseInt(subString[1]);
+                    for (Pokemon p : PokemonsTotal) {
+                        if (p != null && p.getId() == id) {
+                            lista.inserirFim(p);
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case "I*": { // Insere em uma posição
+                    int pos = Integer.parseInt(subString[1]);
+                    int id = Integer.parseInt(subString[2]);
+                    for (Pokemon p : PokemonsTotal) {
+                        if (p != null && p.getId() == id) {
+                            lista.inserirPosicao(p, pos);
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case "RI": { // Remove no início
+                    Pokemon Pokemonremovido = lista.removerInicio();
+                    if (Pokemonremovido != null) {
+                        System.out.println("(R) " + Pokemonremovido.getName());
+                    }
+                    break;
+                }
+                case "RF": { // Remove do final
+                    Pokemon Pokemonremovido = lista.removerFim();
+                    if (Pokemonremovido != null) {
+                        System.out.println("(R) " + Pokemonremovido.getName());
+                    }
+                    break;
+                }
+                case "R*": { // Remove de uma posição
+                    int pos = Integer.parseInt(subString[1]);
+                    Pokemon Pokemonremovido = lista.removerPosicao(pos);
+                    if (Pokemonremovido != null) {
+                        System.out.println("(R) " + Pokemonremovido.getName());
+                    }
+                    break;
+                }
+            }
+        }
+
+        lista.mostrar();
+
+        scanner.close();
     }
 }
