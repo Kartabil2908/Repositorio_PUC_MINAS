@@ -1,0 +1,53 @@
+Comentários sobre a questão:
+
+1 - Simplificar usando propriedades como negação e distributiva facilita enxergar o resultado final.
+
+2 - Ter cuidado com a aplicação correta das propriedades para não perder nenhum detalhe na simplificação.
+
+3 - Quebrar a expressão em partes menores faz com que cada passo seja mais fácil de acompanhar.
+
+
+
+Exercício 1:
+
+a) x' . (y' + z)'
+
+Simplificando:
+
+x' . (y' + z)' =
+x' . (y.z) =
+(x' . y) . (x' . z) =
+(x'+y') . (x'+z') (Propriedade da negação)
+
+b) (x' + y')' . z
+
+Simplificando:
+
+(x' + y')' . z =
+(x.y) . z =
+x.y.z (Propriedade da negação)
+
+c) (x . y')' . z'
+
+Simplificando:
+
+(x . y')' . z' =
+(x + y) . z' =
+(x.z') + (y.z') (Propriedade da distributiva)
+
+d) (x' . y)' . z
+
+Simplificando:
+
+(x' . y)' . z =
+(x + y') . z =
+(x.z) + (y'.z) (Propriedade da distributiva)
+
+e) (x' + y) . (y' + z)'
+
+Simplificando:
+
+(x' + y) . (y' + z)' =
+(x' + y) . (y.z) =
+(x'.y.z) + (y.y.z) + (x'.y'.z) + (y.y'.z) =
+(x'.y.z) + (y.z) (Propriedade da distributiva)

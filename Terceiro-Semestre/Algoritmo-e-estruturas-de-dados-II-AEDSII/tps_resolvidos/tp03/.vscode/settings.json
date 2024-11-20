@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.v": "verilog",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "Q04.C": "cpp"
     }
 }

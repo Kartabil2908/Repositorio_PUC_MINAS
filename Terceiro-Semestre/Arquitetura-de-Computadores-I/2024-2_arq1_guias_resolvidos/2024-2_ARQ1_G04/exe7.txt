@@ -1,0 +1,12 @@
+Comentários	da questão:
+
+1 - Expressar em PoS permite ver a função do ponto de vista de zeros, o que complementa o SoP.
+
+2 - É útil para ver a função de outro ângulo, o que ajuda a confirmar a precisão da lógica.
+
+3 - Entender tanto o SoP quanto o PoS ajuda a enxergar a função completa, cobrindo todos os casos onde ela é falsa e verdadeira.
+
+Exercício 7:
+
+A expressão PoS equivalente é:
+PoS = (x + y + z') . (x' + y' + z)

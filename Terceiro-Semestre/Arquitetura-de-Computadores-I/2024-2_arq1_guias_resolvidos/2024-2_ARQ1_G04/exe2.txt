@@ -1,0 +1,51 @@
+Comentários sobre a questão:
+
+1 - A distributiva é bem útil para quebrar as expressões e reorganizá-las.
+
+2 - Absorção e idempotência ajudam a reduzir expressões rapidamente, evitando termos redundantes.
+
+3 - Confirmar cada etapa da simplificação evita erros e mostra como cada propriedade se aplica ao resultado final.
+
+Exercício 2:
+
+a) x . (x' + y)'
+
+Simplificando:
+
+x . (x' + y)' = 
+x . (x.y) = 
+x^2.y = 
+x.y (Propriedade da idempotência)
+
+b) (x' + y) + (x' . y)
+
+Simplificando:
+
+(x' + y) + (x' . y) =
+x' + y (Propriedade da absorção)
+
+c) (x' . y')' . (x + y)
+
+Simplificando:
+
+(x' . y')' . (x + y) = 
+(x + y') . (x + y) = 
+(x.x) + (x.y) + (y'.x) + (y'.y) =
+x + y' (Propriedade da distributiva)
+
+d) (x' . y)' + (x' + y)'
+
+Simplificando:
+
+(x' . y)' + (x' + y)' =
+(x + y') + (x.y) =
+1 (Propriedade da complementação)
+
+e) (y + x') . (y' + x)'
+
+Simplificando:
+
+(y + x') . (y' + x)' =
+(y + x') . (y.x) =
+(y.y) + (y.x) + (x'.y) + (x'.x) =
+y + x' (Propriedade da distributiva)

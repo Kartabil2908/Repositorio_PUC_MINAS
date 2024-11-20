@@ -1,0 +1,24 @@
+Comentários sobre a questão:
+
+1 - A forma PoS mostra todos os maxtermos, cobrindo as combinações onde a função é zero.
+
+2 - Escrever PoS para funções maiores treina bem para identificar termos comuns que podem ser simplificados.
+
+3 - O uso do PoS como complemento do SoP mostra diferentes maneiras de interpretar e simplificar uma mesma função booleana.
+
+Exercício 4:
+
+a) F(X,Y,Z) = π M(1, 2, 6, 7)
+PoS = (X + Y + Z') . (X + Y' + Z) . (X' + Y + Z') . (X' + Y' + Z)
+
+b) F(X,Y,Z) = π M(0, 3, 4, 7)
+PoS = (X + Y + Z) . (X' + Y + Z') . (X' + Y' + Z) . (X' + Y' + Z')
+
+c) F(X,Y,W,Z) = π M(0, 1, 2, 4, 6, 8, 11, 12)
+PoS = (X + Y + W + Z) . (X + Y + W' + Z) . (X + Y' + W + Z) . (X' + Y + W + Z) . (X + Y' + W' + Z) . (X' + Y + W' + Z) . (X' + Y' + W + Z) . (X' + Y' + W' + Z)
+
+d) F(X,Y,W,Z) = π M(1, 2, 4, 7, 8, 9, 15)
+PoS = (X + Y + W + Z') . (X + Y' + W + Z) . (X' + Y + W + Z) . (X' + Y' + W + Z') . (X' + Y + W' + Z) . (X' + Y' + W' + Z) . (X + Y + W' + Z')
+
+e) F(X,Y,W,Z) = π M(0, 1, 2, 4, 5, 10, 13)
+PoS = (X + Y + W + Z) . (X + Y + W' + Z) . (X + Y' + W + Z) . (X' + Y + W + Z) . (X + Y' + W' + Z) . (X' + Y + W' + Z) . (X' + Y' + W + Z')

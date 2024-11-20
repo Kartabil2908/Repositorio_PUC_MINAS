@@ -1,0 +1,12 @@
+Comentários da questão:
+
+1 - Revisar a expressão equivalente em SoP reforça como simplificar uma expressão complexa.
+
+2 - Importante identificar termos que se combinam para reduzir ao mínimo.
+
+3 - O processo de simplificação exige atenção aos detalhes para garantir que não haja termos faltando ou redundantes.
+
+Exercício 6:
+
+A expressão SoP equivalente é:
+SoP = (x' + y + z') + (x + y' + z')

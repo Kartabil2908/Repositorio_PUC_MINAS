@@ -1,0 +1,24 @@
+Comentários da questão:
+
+1 - Tanto SoP quanto PoS oferecem formas mais simplificadas, dependendo da lógica da função.
+
+2 - Essas formas canônicas ajudam a garantir que a função é completa e cobre todos os cenários.
+
+3 - Comparar SoP e PoS ajuda a entender quando cada forma é mais eficiente para simplificação.
+
+Exercício 5:
+
+a) SoP = 0
+PoS = x + y
+
+b) SoP = x' + y
+PoS = 0
+
+c) SoP = x'.y'.z + x'.y.z' + x.y'.z' + x.y.z
+PoS = (x + y + z') . (x + y' + z) . (x' + y + z') . (x' + y' + z)
+
+d) SoP = x'.y'.z + x'.y.z + x.y'.z' + x.y.z'
+PoS = (x + y + z) . (x + y + z') . (x' + y' + z) . (x' + y' + z')
+
+e) SoP = x'.y'.w'.z + x'.y'.w.z + x'.y.w'.z + x'.y.w.z' + x.y'.w'.z + x.y'.w.z + x.y.w'.z + x.y.w.z'
+PoS = (x + y + w + z) . (x + y + w' + z) . (x + y' + w + z) . (x + y' + w' + z') . (x' + y + w + z) . (x' + y + w' + z) . (x' + y' + w + z') . (x' + y' + w' + z')

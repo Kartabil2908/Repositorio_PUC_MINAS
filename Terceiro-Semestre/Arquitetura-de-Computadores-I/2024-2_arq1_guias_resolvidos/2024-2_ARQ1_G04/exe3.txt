@@ -1,0 +1,24 @@
+Comentários sobre a questão:
+
+1 - Representar as funções na forma SoP é prático para cobrir todos os mintermos necessários.
+
+2 - Fazer SoP para várias combinações ajuda a visualizar melhor cada caso da função booleana.
+
+3 - Esse exercício reforça a ideia de que SoP é útil para entender a estrutura total da função, destacando as condições em que ela é verdadeira.
+
+Exercício 3:
+
+a) f(x,y,z) = ∑ m(1, 5, 6, 7)
+SoP = x'.y.z + x.y'.z + x.y.z' + x.y.z
+
+b) f(x,y,z) = ∑ m(2, 5, 6, 7)
+SoP = x'.y.z' + x.y'.z + x.y.z' + x.y.z
+
+c) f(x,y,w,z) = ∑ m(1, 2, 3, 6, 7, 11, 15)
+SoP = x'.y'.z + x'.y.z' + x'.y.z + x.y'.z' + x.y.z + x.w'.z' + x.w.z
+
+d) f(x,y,w,z) = ∑ m(1, 2, 6, 8, 10, 12, 14)
+SoP = x'.y'.z + x'.y.z' + x.y'.z' + x.y'.w' + x.y.w' + x.y'.w + x.y.w
+
+e) f(x,y,w,z) = ∑ m(0, 2, 5, 7, 8, 11)
+SoP = x'.y'.z' + x'.y.z' + x.y'.z + x.y.z + x.y'.w' + x.w'.z
