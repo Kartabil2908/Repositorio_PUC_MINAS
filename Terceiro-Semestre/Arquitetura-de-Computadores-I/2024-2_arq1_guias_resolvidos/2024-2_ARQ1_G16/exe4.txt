@@ -1,0 +1,19 @@
+LXI H, 0100h    ; HL <- endereço do arranjo
+MOV A, M         ; A <- MEM[HL] (primeiro valor do arranjo)
+INX H            ; HL <- HL + 1
+
+FIND_MAX_LOOP:
+MOV B, M         ; B <- MEM[HL] (próximo valor do arranjo)
+CMP B            ; Comparar A com B
+JC CONTINUE      ; Se A < B, continuar
+MOV A, B         ; A <- B (atualizar maior valor)
+CONTINUE:
+INX H            ; HL <- HL + 1
+MOV C, H         ; C <- H (salvar endereço atual)
+MOV H, L
+MOV L, C
+CMP L            ; Comparar HL com o fim do arranjo
+JNZ FIND_MAX_LOOP ; Repetir loop até o fim do arranjo
+
+MOV M, A         ; MEM[HL] <- A (maior valor)
+HLT              ; Parar

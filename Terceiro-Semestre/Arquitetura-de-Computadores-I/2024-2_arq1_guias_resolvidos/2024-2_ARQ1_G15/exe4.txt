@@ -1,0 +1,14 @@
+LXI H, 0100h    ; HL <- endereço de dado01
+MOV A, M         ; A <- MEM[HL] (dado01)
+MOV B, A         ; B <- A (armazenar dado01)
+ADD A            ; A <- A + A (dado01 * 2)
+ADD A            ; A <- A + A (dado01 * 4)
+ADD B            ; A <- A + B (dado01 * 8)
+MOV C, A         ; C <- A (armazenar dado01 * 8)
+INX H            ; HL <- HL + 1 (endereço de dado02)
+MOV A, M         ; A <- MEM[HL] (dado02)
+RRC              ; A <- A / 2 (deslocar à direita para dividir por 2)
+ADD C            ; A <- A + C (dado01 * 8 + dado02 / 2)
+INX H            ; HL <- HL + 1 (endereço de dado03)
+MOV M, A         ; MEM[HL] <- A (dado03)
+HLT              ; Parar

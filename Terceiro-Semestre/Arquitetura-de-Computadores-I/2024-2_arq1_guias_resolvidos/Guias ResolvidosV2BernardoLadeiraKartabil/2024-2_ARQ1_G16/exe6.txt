@@ -1,0 +1,14 @@
+LXI H, 0100h    ; HL <- endereço de dado01
+MOV B, M         ; B <- MEM[HL] (dado01)
+MVI A, 00h       ; A <- 0 (inicializar acumulador)
+MVI C, 01h       ; C <- 1 (inicializar somador ímpar)
+
+SQR_LOOP:
+ADD C            ; A <- A + C (somar ímpar)
+INR C            ; C <- C + 2 (próximo ímpar)
+DCR B            ; B <- B - 1 (decrementar contador)
+JNZ SQR_LOOP     ; Repetir loop até B = 0
+
+INX H            ; HL <- HL + 1 (endereço de dado02)
+MOV M, A         ; MEM[HL] <- A (dado02)
+HLT              ; Parar

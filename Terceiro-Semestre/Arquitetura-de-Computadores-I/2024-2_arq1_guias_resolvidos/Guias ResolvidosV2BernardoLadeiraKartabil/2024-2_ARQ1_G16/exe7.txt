@@ -1,0 +1,16 @@
+LXI H, 0100h    ; HL <- endereço de dado01
+MOV B, M         ; B <- MEM[HL] (dado01)
+MVI A, 01h       ; A <- 1 (inicializar acumulador)
+MVI C, 01h       ; C <- 1 (inicializar multiplicador)
+
+FAT_LOOP:
+MOV D, A         ; D <- A (armazenar acumulador)
+MOV A, C         ; A <- C (multiplicador)
+MUL D            ; A <- A * D (multiplicar)
+INR C            ; C <- C + 1 (incrementar multiplicador)
+DCR B            ; B <- B - 1 (decrementar contador)
+JNZ FAT_LOOP     ; Repetir loop até B = 0
+
+INX H            ; HL <- HL + 1 (endereço de dado02)
+MOV M, A         ; MEM[HL] <- A (dado02)
+HLT              ; Parar

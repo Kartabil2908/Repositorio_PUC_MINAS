@@ -1,0 +1,14 @@
+LXI H, 0100h    ; HL <- endereço de dado01
+MOV A, M         ; A <- MEM[HL] (dado01)
+INX H            ; HL <- HL + 1 (endereço de dado02)
+SUB M            ; A <- A - MEM[HL] (dado01 - dado02)
+DAA              ; Ajustar para BCD
+INX H            ; HL <- HL + 1 (endereço de dado03)
+ADD M            ; A <- A + MEM[HL] (dado01 - dado02 + dado03)
+DAA              ; Ajustar para BCD
+INX H            ; HL <- HL + 1 (endereço de dado04)
+SUB M            ; A <- A - MEM[HL] (dado01 - dado02 + dado03 - dado04)
+DAA              ; Ajustar para BCD
+INX H            ; HL <- HL + 1 (endereço de dado05)
+MOV M, A         ; MEM[HL] <- A (dado05)
+HLT              ; Parar

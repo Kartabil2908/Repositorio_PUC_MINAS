@@ -1,0 +1,9 @@
+LXI H, 0100h    ; HL <- endereço de dado01
+MOV A, M         ; A <- MEM[HL] (dado01)
+INX H            ; HL <- HL + 1 (endereço de dado02)
+ADD M            ; A <- A + MEM[HL] (dado01 + dado02)
+INX H            ; HL <- HL + 1 (endereço de dado03)
+SUB M            ; A <- A - MEM[HL] (dado01 + dado02 - dado03)
+INX H            ; HL <- HL + 1 (endereço de dado04)
+MOV M, A         ; MEM[HL] <- A (dado04)
+HLT              ; Parar

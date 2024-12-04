@@ -1,0 +1,73 @@
+a) Expressão simplificada por mintermos para Da:
+
+Estados onde Da = 1 na tabela de transição de estados.
+Os estados são: 7 (0111), 9 (1001), A (1010), B (1011), D (1101), E (1110).
+
+Os mintermos são:
+
+m7 = a'b'cd,
+
+m9 = ab'c'd,
+
+m10 = ab'cd',
+
+m11 = ab'cd,
+
+m13 = abc'd,
+
+m14 = abcd'.
+
+Expressão simplificada:
+
+Da = b'cd + abc'd + abcd'.
+
+b) Expressão simplificada por MAXTERMOS para Db:
+
+Estados onde Db = 0.
+Os estados são: 0 (0000), 1 (0001), 2 (0010), 4 (0100), 8 (1000), C (1100), F (1111).
+
+Os maxtermos são:
+
+M0 = a + b + c + d,
+
+M1 = a + b + c + d',
+
+M2 = a + b + c' + d,
+
+M4 = a + b' + c + d,
+
+M8 = a' + b + c + d,
+
+M12 = a' + b' + c + d,
+
+M15 = a' + b' + c' + d'.
+
+Expressão simplificada:
+
+Db = (a + b + c + d)(a + b + c + d')(a + b + c' + d)(a + b' + c + d)(a' + b + c + d)(a' + b' + c + d)(a' + b' + c' + d').
+
+c) Expressão simplificada por mintermos para Dc:
+
+Estados onde Dc = 1: 1 (0001), 2 (0010), 3 (0011), 5 (0101), 6 (0110), 7 (0111), 9 (1001), A (1010), B (1011), D (1101), E (1110).
+
+Expressão simplificada:
+
+Dc = a'bc + ab'c + ab'c'd + abc'd + abc.
+
+d) Expressão simplificada por mintermos para Ta:
+
+Os estados são os mesmos de Da, então:
+
+Ta = b'cd + abc'd + abcd'.
+
+e) Expressão simplificada por MAXTERMOS para Tb:
+
+Os estados são os mesmos de Db, então:
+
+Tb = (a + b + c + d)(a + b + c + d')(a + b + c' + d)(a + b' + c + d)(a' + b + c + d)(a' + b' + c + d)(a' + b' + c' + d').
+
+f) Expressão simplificada por mintermos para Tc:
+
+Os estados são os mesmos de Dc, então:
+
+Tc = a'bc + ab'c + ab'c'd + abc'd + abc.

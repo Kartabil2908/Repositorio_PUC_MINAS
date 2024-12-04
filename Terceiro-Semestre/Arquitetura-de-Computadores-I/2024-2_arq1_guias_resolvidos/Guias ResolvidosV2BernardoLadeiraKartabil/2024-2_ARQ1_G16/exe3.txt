@@ -1,0 +1,15 @@
+LXI H, 0100h    ; HL <- endereço de dado01
+MOV B, M         ; B <- MEM[HL] (dado01)
+INX H            ; HL <- HL + 1 (endereço de dado02)
+MOV C, M         ; C <- MEM[HL] (dado02)
+
+IMOD_LOOP:
+CMP C            ; Comparar B com C
+JC IMOD_DONE     ; Se B < C, sair do loop
+SUB C            ; B <- B - C (subtrair dado02)
+JMP IMOD_LOOP    ; Repetir loop
+
+IMOD_DONE:
+INX H            ; HL <- HL + 1 (endereço de dado03)
+MOV M, B         ; MEM[HL] <- B (dado03)
+HLT              ; Parar
