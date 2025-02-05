@@ -1,0 +1,3 @@
+Tempo de execução: 14.648000 segundos
+Número de comparações: 28
+Número de movimentações: 81

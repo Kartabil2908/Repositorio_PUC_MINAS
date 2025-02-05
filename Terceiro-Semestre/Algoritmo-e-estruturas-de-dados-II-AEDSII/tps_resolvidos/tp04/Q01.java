@@ -1,6 +1,7 @@
-
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,8 +9,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+// Classe que representa um Pokémon
 class Pokemon {
-    // VALORES
+    // Atributos do Pokémon
     private int id;
     private int generation;
     private String name = "";
@@ -22,7 +24,7 @@ class Pokemon {
     private boolean isLegendary;
     private Date captureDate;
 
-    // CONSTRUTORES
+    // Construtor completo
     Pokemon(int id, int gen, String name, String description, List<String> tipos, List<String> habilidades, double peso,
             double altura, int captura, boolean lendario, Date data) {
         this.id = id;
@@ -38,13 +40,14 @@ class Pokemon {
         this.captureDate = data;
     }
 
+    // Construtor padrão
     Pokemon() {
         this(0, 0, "", "", null, null, 0.0, 0.0, 0, false, null);
     }
 
     // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    // METODOS
+    // Métodos de acesso (getters e setters)
 
     // ID
     public int getId() {
@@ -53,10 +56,7 @@ class Pokemon {
 
     public void setId(int id) {
         this.id = id;
-
     }
-
-    // -------------------------------------------------
 
     // GENERATION
     public int getGeneration() {
@@ -66,7 +66,6 @@ class Pokemon {
     public void setGeneration(int generation) {
         this.generation = generation;
     }
-    // -------------------------------------------------
 
     // NAME
     public String getName() {
@@ -76,7 +75,6 @@ class Pokemon {
     public void setName(String name) {
         this.name = name;
     }
-    // -------------------------------------------------
 
     // DESCRIPTION
     public String getDescription() {
@@ -86,7 +84,6 @@ class Pokemon {
     public void setDescription(String description) {
         this.description = description;
     }
-    // -------------------------------------------------
 
     // TYPES
     public List<String> getTypes() {
@@ -96,7 +93,6 @@ class Pokemon {
     public void setTypes(List<String> types) {
         this.types = types;
     }
-    // -------------------------------------------------
 
     // ABILITIES
     public List<String> getAbilities() {
@@ -106,7 +102,6 @@ class Pokemon {
     public void setAbilities(List<String> abilities) {
         this.abilities = abilities;
     }
-    // -------------------------------------------------
 
     // WEIGHT
     public double getWeight() {
@@ -116,7 +111,6 @@ class Pokemon {
     public void setWeight(double weight) {
         this.weight = weight;
     }
-    // -------------------------------------------------
 
     // HEIGHT
     public double getHeight() {
@@ -126,7 +120,6 @@ class Pokemon {
     public void setHeight(double height) {
         this.height = height;
     }
-    // --------------------------------------------------------------------------
 
     // CAPTURE RATE
     public int getCaptureRate() {
@@ -136,7 +129,6 @@ class Pokemon {
     public void setCaptureRate(int captureRate) {
         this.captureRate = captureRate;
     }
-    // -------------------------------------------------
 
     // IS LEGENDARY
     public boolean isLegendary() {
@@ -146,7 +138,6 @@ class Pokemon {
     public void setLegendary(boolean isLegendary) {
         this.isLegendary = isLegendary;
     }
-    // -------------------------------------------------
 
     // CAPTURE DATE
     public Date getCaptureDate() {
@@ -157,6 +148,7 @@ class Pokemon {
         this.captureDate = captureDate;
     }
 
+    // Método para formatar a data de captura
     public String FormatarData() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String dataFormatada;
@@ -168,11 +160,10 @@ class Pokemon {
 
         return dataFormatada;
     }
-    // -------------------------------------------------
 
+    // Método para imprimir os detalhes do Pokémon
     public void printarPokemon() {
         // Formatação da data
-
         String dataFormatada = this.FormatarData();
 
         // Formatação da saída
@@ -209,6 +200,7 @@ class Pokemon {
                 this.isLegendary, this.generation, dataFormatada);
     }
 
+    // Método para comparar dois Pokémon por geração e nome
     public static int comparePokemon(Pokemon p1, Pokemon p2) {
         // Comparar pela geração
         int generationComparison = Integer.compare(p1.getGeneration(), p2.getGeneration());
@@ -222,32 +214,27 @@ class Pokemon {
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------
 
-// METODOS GERAIS - FORA DA CLASSE POKEMON
+// Métodos gerais - fora da classe Pokémon
 class Geral {
 
     public static int numComparacoes = 0;
     public static int numMovimentacoes = 0;
 
+    // Método para separar as strings do CSV
     public String[] separarTresStrings(String teste) {
-
         // Separando as strings
-
         String[] separarPrimeiraString = teste.split(",", 7);
         String[] separarStringHabilidades = separarPrimeiraString[6].split("]");
 
-        // coloca as strings da primeira parte numa outra vaiável, pra ficar mais
-        // organizado
+        // Coloca as strings da primeira parte numa outra variável, pra ficar mais organizado
         String[] primeiraString = new String[6];
         for (int i = 0; i < 6; i++) {
             primeiraString[i] = separarPrimeiraString[i];
         }
 
-        // Formata as Habilidades e separa depois em vírgulas
-        String habilidadeString = separarStringHabilidades[0].replaceAll("[\\[\\]'\"\\\\]", "").trim(); // [ e \\] bucam
-        // os colchetes
-        // [ e ]
-        String[] dadosAdicionais = separarStringHabilidades[1].split(","); // \' a aspa simples ('), \" a aspa dupla
-        // ("), \\\\ a barra invertida (\)
+        // Formata as habilidades e separa depois em vírgulas
+        String habilidadeString = separarStringHabilidades[0].replaceAll("[\\[\\]'\"\\\\]", "").trim(); // Remove colchetes e aspas
+        String[] dadosAdicionais = separarStringHabilidades[1].split(","); // Separa os dados adicionais
 
         return new String[] {
                 primeiraString[0], // ID
@@ -265,17 +252,14 @@ class Geral {
         };
     }
 
-    // ---------------------------------------------------------------------------------------------------------------------------------------------
-
+    // Método para ler o CSV e preencher o array de Pokémon
     public void lerCsv(Pokemon[] poketeste) throws FileNotFoundException, ParseException {
-
-        File file = new File("tmp/pokemon.csv"); // para o verde aceitar é /tmp/pokemon.csv
+        File file = new File("/tmp/pokemon.csv"); // para o verde aceitar é /tmp/pokemon.csv
         Scanner scanner = new Scanner(file);
         String teste = scanner.nextLine(); // Lendo a primeira linha do arquivo, ou seja, o título
         int controle = 0;
 
         while (scanner.hasNextLine()) {
-
             teste = scanner.nextLine();
             String[] resultado = separarTresStrings(teste);
 
@@ -299,7 +283,6 @@ class Geral {
             String[] habilidadesArray = habilidadeString.split(", ");
 
             // Atribuindo os valores e convertendo eles
-
             for (String habilidade : habilidadesArray) {
                 habilidades.add(habilidade.trim());
             }
@@ -347,8 +330,7 @@ class Geral {
         scanner.close();
     }
 
-    // ---------------------------------------------------------------------------------------------------------------------------------------------
-
+    // Método para ler IDs de entrada
     public int lerIdsEntrada(Scanner leitura, int[] identrada) {
         String texto = "";
         int posicao = 0;
@@ -365,8 +347,7 @@ class Geral {
         return posicao; // Retorna a quantidade de IDs lidos
     }
 
-    // ---------------------------------------------------------------------------------------------------------------------------------------------
-
+    // Método para ler nomes de entrada
     public int lerNomesEntrada(Scanner leitura, String[] nameEntrada) {
         String nome = "";
         int posicao = 0;
@@ -382,163 +363,146 @@ class Geral {
         return posicao; // Retorna a quantidade de nomes lidos
     }
 
-}
 
-// ---------------------------------------------------------------------------------------------------------------------------------------------
-
-class No
-{
-    Pokemon pokemon;
-    No esq, dir;
-
-    No(Pokemon poke)
-    {
-        this.pokemon = poke;
-        this.esq = null;
-        this.dir = null;
+    // Método para criar o arquivo de log
+    public void criarLog(int numComparacoes, int numMovimentacoes) throws IOException {
+            FileWriter writer = new FileWriter("1449304_arvoreBinaria.txt");
+            writer.write("Matrícula: 1449304\tTempo de Execução: " + System.currentTimeMillis() + "ms " + "\tNúmero de Comparações: "+ numComparacoes + "\tNúmero de Movimentações: " + numMovimentacoes);
+            writer.close();
+        }
     }
-    No()
-    {
-        this.pokemon = null;
-        this.esq = null;
-        this.dir = null;
+    
+    // ---------------------------------------------------------------------------------------------------------------------------------------------
+    
+    // Classe do nó da árvore binária
+    class No {
+        Pokemon pokemon; 
+        No esq, dir;     
+    
+        No(Pokemon pokemon) {
+            this.pokemon = pokemon; 
+            this.esq = null;        
+            this.dir = null;
+        }
     }
-}
+    
 
+    // Classe da árvore binária
+    class Arvore {
 
-class Arvore
-{
-    No raiz;
+        private No raiz; // Referência ao nó raiz da árvore
+        public int numComparacoes = 0; // Contador de comparações
+        public int numMovimentacoes = 0; // Contador de movimentações
+    
 
-    Arvore()
-    {
-       this.raiz = new No();
+        public Arvore() {
+            this.raiz = null; // Inicialmente, a árvore está vazia
+        }
+    
+
+        // Método para inserir um Pokémon na árvore
+        public void inserir(Pokemon pokemon) {
+            this.raiz = inserir(this.raiz, pokemon); // Chama o método recursivo de inserção
+        }
+    
+
+        // Método recursivo para inserir um nó
+        private No inserir(No no, Pokemon pokemon) {
+
+            if (no == null) { // Local encontrado para inserção
+                numMovimentacoes++;
+                return new No(pokemon);
+            }
+
+            // Comparações para decidir o lado da inserção
+            String nomeAtual = pokemon.getName();
+            numComparacoes++;
+
+            if (nomeAtual.compareTo(no.pokemon.getName()) < 0) { // Inserir à esquerda
+                no.esq = inserir(no.esq, pokemon);
+            } else if (nomeAtual.compareTo(no.pokemon.getName()) > 0){ // Inserir à direita
+                no.dir = inserir(no.dir, pokemon); 
+            }
+            
+            return no; // Retorna o nó atual para manter a estrutura da árvore
+        }
+    
         
-    }
-
-    public void PesquisarArvoreName(String nomePokemon)
-    {
-        Boolean resp;
-
-
-        System.err.println(nomePokemon);
-        System.out.print("=>raiz ");
-        resp = PesquisarNo(nomePokemon, this.raiz);
-
-        if(resp == true)
-        {
-            System.out.println("SIM");
-        }else
-        {
-            System.err.println("NAO");  
+        // Método para pesquisar um Pokémon na árvore
+        public boolean pesquisar(String nome) {
+            System.out.println(nome);
+            System.out.print("=>raiz ");
+            return pesquisar(this.raiz, nome); // Chama o método recursivo de busca
+        }
+    
+        private boolean pesquisar(No no, String nome) {
+            if (no == null) { // Se nó for nulo, elemento não encontrado
+                System.out.println("NAO");
+                return false;
+            }
+    
+            numComparacoes++;
+            if (nome.compareTo(no.pokemon.getName()) == 0) { // Elemento encontrado
+                System.out.println("SIM");
+                return true;
+            }
+    
+            // Decisão para continuar a busca à esquerda ou à direita
+            numComparacoes++;
+            if (nome.compareTo(no.pokemon.getName()) < 0) {
+                System.out.print("esq ");
+                return pesquisar(no.esq, nome);
+            } else {
+                System.out.print("dir ");
+                return pesquisar(no.dir, nome);
+            }
         }
     }
-
-    Boolean PesquisarNo(String nome, No raiz)
-    {
-        boolean resp = false;
-
-        if(raiz == null || raiz.pokemon == null)
-        {
-            resp = false;
-
-        }else if(raiz.dir != null && raiz.pokemon.getName().compareTo(nome) < 0){
-            System.out.print("dir ");
-            resp = PesquisarNo(nome, raiz.dir);
-
-
-        }else if(raiz.dir != null && raiz.pokemon.getName().compareTo(nome) > 0)
-        {
-            System.out.print("esq ");
-            resp = PesquisarNo(nome, raiz.esq);
-
-        }else if(raiz.pokemon.getName().equals(nome))
-        {
-            resp = true;
-        }
-
-        return resp;
-    }
-
-
-    void inserirPokemonArvore(Pokemon poke, No raiz)
-    {
-        String nomePoke = poke.getName();
-       
-
-        if (raiz == null || raiz.pokemon == null)
-        {
-            No no = new No();
-            no.pokemon = poke;
-        
-        }else if(raiz.pokemon.getName().compareTo(nomePoke) < 0)
-        {
-            inserirPokemonArvore(poke, raiz.dir);
-        }else if(raiz.pokemon.getName().compareTo(nomePoke) > 0)
-        {
-            inserirPokemonArvore(poke, raiz.esq);
-        }
-
-
-    }
-
-
-}
-
-// ---------------------------------------------------------------------------------------------------------------------------------------------
-
-public class Q01 {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Geral geral = new Geral();
-
-        // ler os pokemons do arquivo
-        Pokemon[] PokemonsTotal = new Pokemon[805];
-        try {
-            geral.lerCsv(PokemonsTotal);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        // Cria uma arvore sequencial
-        Arvore  arvore = new Arvore();
-
-        // Lê os ids dos pokemons
-        int[] ids = new int[1000];
-        int numIds = geral.lerIdsEntrada(scanner, ids);
-
-        // Coloca o pokemon na arvore
-        for (int i = 0; i < numIds; i++) {
-            for (Pokemon p : PokemonsTotal) {
-                if (p != null && p.getId() == ids[i]) {
-                    arvore.inserirPokemonArvore(p, arvore.raiz);
-                    break;
+    
+    // ---------------------------------------------------------------------------------------------------------------------------------------------
+    
+    public class Q01 {
+        public static void main(String[] args) throws IOException {
+            Scanner scanner = new Scanner(System.in);
+            Geral geral = new Geral(); // Classe de métodos auxiliares
+    
+            // Lê os Pokémons do arquivo CSV
+            Pokemon[] PokemonsTotal = new Pokemon[805];
+            try {
+                geral.lerCsv(PokemonsTotal);
+            } catch (FileNotFoundException e) {
+                System.err.println("Arquivo CSV não foi encontrado.");
+                e.printStackTrace();
+            } catch (ParseException e) {
+                System.err.println("Erro ao parsear data no CSV.");
+                e.printStackTrace();
+            }
+    
+            // Cria a árvore binária de busca
+            Arvore arvore = new Arvore();
+    
+            // Lê os IDs dos Pokémon para inserção na árvore
+            int[] ids = new int[1000];
+            int numIds = geral.lerIdsEntrada(scanner, ids);
+    
+            // Insere os Pokémon na árvore com base nos IDs lidos
+            for (int i = 0; i < numIds; i++) {
+                for (Pokemon p : PokemonsTotal) {
+                    if (p != null && p.getId() == ids[i]) { // Verifica ID do Pokémon
+                        arvore.inserir(p); // Insere o Pokémon na árvore
+                        break;
+                    }
                 }
             }
-        }
-
-
-        for (int i = 0; i < numIds; i++) {
-
+    
+            // Lê os nomes a serem pesquisados na árvore
             String nome = scanner.nextLine();
-
-            while(!(nome.equals("FIM")))
-            {
-                arvore.PesquisarArvoreName(nome);
+            while (!nome.equals("FIM")) {
+                arvore.pesquisar(nome); // Faz a busca e imprime o caminho
+                nome = scanner.nextLine();
             }
-
-        }
-
-
-        
-
-
-
-        
+    
+            geral.criarLog(arvore.numComparacoes, arvore.numMovimentacoes);
 
         scanner.close();
     }

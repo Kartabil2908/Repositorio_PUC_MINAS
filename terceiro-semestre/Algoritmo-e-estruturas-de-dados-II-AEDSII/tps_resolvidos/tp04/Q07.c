@@ -5,7 +5,7 @@
 #include <time.h>
 #include <ctype.h>
 
-#define ARQUIVO_CAMINHO "tmp/pokemon.csv"
+#define ARQUIVO_CAMINHO "/tmp/pokemon.csv"
 #define MAX_POKEMONS 801
 #define MAX_BUFFER 1000
 #define MAX_LISTA 50
@@ -15,6 +15,7 @@
 #define MAX_NOMES 200
 #define MAX_IDS 200
 #define K 10
+#define TAMANHO_HASH 21 // Tamanho da tabela hash
 
 typedef struct Lista
 {
@@ -37,19 +38,20 @@ typedef struct Pokemon
     char dataCaptura[11];
 } Pokemon;
 
+// Estrutura de nó para lista simples
 typedef struct No
 {
-    Pokemon pokemon;
-    struct No *esq, *dir;
-    int altura;
+    char nome[50];   // Nome do Pokémon
+    struct No *prox; // Ponteiro para o próximo nó
 } No;
 
-typedef struct Arvore
+// Estrutura da tabela hash
+typedef struct TabelaHash
 {
-    No *raiz;
-    int numComparacoes;
-    int numMovimentacoes;
-} Arvore;
+    No *tabela[TAMANHO_HASH]; // Vetor de listas com TAMANHO_HASH entradas
+    int comparacoes;          // Contador de comparações
+    int movimentacoes;        // Contador de movimentações
+} TabelaHash;
 
 // protótipos de funções:
 
@@ -66,61 +68,71 @@ char *encontrar_separador(char **, const char *);
 void preencher_array_pokemons(Pokemon[]);
 void exibir_pokemon(Pokemon pokemon);
 
-Pokemon buscarPokemonPorId(const char* id, Pokemon* pokemons, int numPokemons);
-void inserirPokemonArvore(Arvore *arvore, Pokemon pokemon);
-bool buscarPokemonArvore(Arvore *arvore, const char *nome);
-void inicializarArvore(Arvore *arvore);
+Pokemon buscarPokemonPorId(const char *id, Pokemon *pokemons, int numPokemons);
 
-// Funções AVL
-int altura(No *n);
-int max(int a, int b);
-No* rotacaoDireita(No *y);
-No* rotacaoEsquerda(No *x);
-int getBalanceamento(No *n);
-No* balancearArvore(No *n, Pokemon pokemon);
-No* inserirNoAVL(No* no, Pokemon pokemon, Arvore *arvore);
+// protótipos de funções Tabela Hash:
+
+int calcular_indice_hash(const char *nome);
+void inicializar_tabela_hash(TabelaHash *hash);
+void inserir_na_tabela(TabelaHash *hash, const char *nome);
+No *buscar_na_tabela(TabelaHash *hash, const char *nome);
+
+void inserir_na_tabela_por_id(TabelaHash *hash, const char *id, Pokemon *pokemons, int numPokemons);
 
 // MAIN ----------------------------------------------------------------------------------------------------------
 
-int main() {
-    Pokemon basePokemons[MAX_POKEMONS];
-    Arvore arvore;
-    inicializarArvore(&arvore);
+int main()
+{
+    char entrada[200];     
+    Pokemon pokemons[802]; 
+    int numPokemons = 802; 
+    char nomeBusca[50];
 
-    char entrada[10];
-    int numPokemons = 801;
+    preencher_array_pokemons(pokemons);
 
-    preencher_array_pokemons(basePokemons);
+    // Inicializa a tabela hash
+    TabelaHash hash;
+    inicializar_tabela_hash(&hash);
 
-    // Inserir os Pokémons na árvore
-    for (int i = 0; i < numPokemons; i++) {
-        arvore.raiz = inserirNoAVL(arvore.raiz, basePokemons[i], &arvore);
+
+
+    scanf("%s", entrada);
+
+    
+    while (strcmp(entrada, "FIM") != 0)
+    {
+        inserir_na_tabela_por_id(&hash, entrada, pokemons, numPokemons);
+        scanf("%s", entrada);
     }
 
-    // Medir o tempo de execução
-    clock_t inicio = clock();
 
-    while (1) {
-        scanf("%s", entrada);
-        if (strcmp(entrada, "FIM") == 0) break;
-        
-        bool encontrado = buscarPokemonArvore(&arvore, entrada);
-        if (encontrado) {
-            printf("SIM\n");
-        } else {
-            printf("NAO\n");
+    int controle = 1;
+
+    while (controle == 1)
+    {
+        scanf("%s", nomeBusca);
+        if (strcmp(nomeBusca, "FIM") == 0)
+        {
+            controle = 0;
+        }
+        else
+        {
+            No *encontrado = buscar_na_tabela(&hash, nomeBusca);
+
+            if (encontrado != NULL && strcmp(encontrado->nome, nomeBusca) == 0)
+            {
+                int indice = calcular_indice_hash(nomeBusca);
+                printf("=> %s: (Posicao: %d) SIM\n", nomeBusca, indice);
+            }
+            else
+            {
+                printf("=> %s: NAO\n", nomeBusca);
+            }
         }
     }
 
-    clock_t fim = clock();
-    double tempoExecucao = (double)(fim - inicio) / CLOCKS_PER_SEC;
-
-    // Criar o arquivo de log
-    criarLog(tempoExecucao, arvore.numComparacoes, arvore.numMovimentacoes, "matricula_avl.txt");
-
     return 0;
 }
-
 // MAIN ----------------------------------------------------------------------------------------------------------
 
 // MÉTODOS DE LISTA DE HABILIDADES ----------------------------------------------------------------------------------------------------------
@@ -143,7 +155,7 @@ char *remover_espaco(char *entrada)
     if (saida)
     {
         strncpy(saida, inicio, tamanho);
-        saida[tamanho] = '\0'; 
+        saida[tamanho] = '\0';
     }
     return saida;
 }
@@ -439,130 +451,96 @@ void exibir_pokemon(Pokemon pokemon)
     printf("\n");
 }
 
-// MÉTODOS DA ÁRVORE BINÁRIA ----------------------------------------------------------------------------------------------------------
+// METODOS TABELA HASH ----------------------------------------------------------------------------------------------------------
 
-void inicializarArvore(Arvore *arvore) {
-    arvore->raiz = NULL;
-    arvore->numComparacoes = 0;
-    arvore->numMovimentacoes = 0;
-}
+int calcular_indice_hash(const char *nome)
+{
+    int soma_ascii = 0;
 
-No* criarNo(Pokemon pokemon) {
-    No* novoNo = (No*)malloc(sizeof(No));
-    novoNo->pokemon = pokemon;
-    novoNo->esq = NULL;
-    novoNo->dir = NULL;
-    novoNo->altura = 1;
-    return novoNo;
-}
-
-int altura(No *n) {
-    if (n == NULL)
-        return 0;
-    return n->altura;
-}
-
-int max(int a, int b) {
-    return (a > b) ? a : b;
-}
-
-No* rotacaoDireita(No *y) {
-    No *x = y->esq;
-    No *T2 = x->dir;
-
-    x->dir = y;
-    y->esq = T2;
-
-    y->altura = max(altura(y->esq), altura(y->dir)) + 1;
-    x->altura = max(altura(x->esq), altura(x->dir)) + 1;
-
-    return x;
-}
-
-No* rotacaoEsquerda(No *x) {
-    No *y = x->dir;
-    No *T2 = y->esq;
-
-    y->esq = x;
-    x->dir = T2;
-
-    x->altura = max(altura(x->esq), altura(x->dir)) + 1;
-    y->altura = max(altura(y->esq), altura(y->dir)) + 1;
-
-    return y;
-}
-
-int getBalanceamento(No *n) {
-    if (n == NULL)
-        return 0;
-    return altura(n->esq) - altura(n->dir);
-}
-
-No* balancearArvore(No *n, Pokemon pokemon) {
-    int balanceamento = getBalanceamento(n);
-
-    if (balanceamento > 1 && strcmp(pokemon.nomePokemon, n->esq->pokemon.nomePokemon) < 0)
-        return rotacaoDireita(n);
-
-    if (balanceamento < -1 && strcmp(pokemon.nomePokemon, n->dir->pokemon.nomePokemon) > 0)
-        return rotacaoEsquerda(n);
-
-    if (balanceamento > 1 && strcmp(pokemon.nomePokemon, n->esq->pokemon.nomePokemon) > 0) {
-        n->esq = rotacaoEsquerda(n->esq);
-        return rotacaoDireita(n);
+    for (int i = 0; i < strlen(nome); i++)
+    {
+        soma_ascii += (int)nome[i];
     }
 
-    if (balanceamento < -1 && strcmp(pokemon.nomePokemon, n->dir->pokemon.nomePokemon) < 0) {
-        n->dir = rotacaoDireita(n->dir);
-        return rotacaoEsquerda(n);
-    }
-
-    return n;
+    return soma_ascii % TAMANHO_HASH;
 }
 
-No* inserirNoAVL(No* no, Pokemon pokemon, Arvore *arvore) {
-    if (no == NULL)
-        return criarNo(pokemon);
+void inicializar_tabela_hash(TabelaHash *hash)
+{
+    for (int i = 0; i < TAMANHO_HASH; i++)
+    {
+        hash->tabela[i] = NULL; // Inicializa todas as posições com NULL
+    }
+    hash->comparacoes = 0;
+    hash->movimentacoes = 0;
+}
 
-    arvore->numComparacoes++;
-    if (strcmp(pokemon.nomePokemon, no->pokemon.nomePokemon) < 0)
-        no->esq = inserirNoAVL(no->esq, pokemon, arvore);
-    else if (strcmp(pokemon.nomePokemon, no->pokemon.nomePokemon) > 0)
-        no->dir = inserirNoAVL(no->dir, pokemon, arvore);
+void inserir_na_tabela(TabelaHash *hash, const char *nome)
+{
+    int indice = calcular_indice_hash(nome);
+
+    // Cria o novo nó
+    No *novo_no = (No *)malloc(sizeof(No));
+    strcpy(novo_no->nome, nome);
+    novo_no->prox = NULL;
+
+    hash->movimentacoes++; // Incrementa o contador de movimentações
+
+    // Insere na lista correspondente ao índice
+    if (hash->tabela[indice] == NULL)
+    {
+        hash->tabela[indice] = novo_no;
+    }
     else
-        return no;
+    {
+        No *atual = hash->tabela[indice];
 
-    no->altura = 1 + max(altura(no->esq), altura(no->dir));
+        while (atual->prox != NULL)
+        {
+            hash->comparacoes++; // Incrementa o contador de comparações
+            atual = atual->prox;
+        }
 
-    return balancearArvore(no, pokemon);
+        atual->prox = novo_no;
+        hash->movimentacoes++; // Incrementa as movimentações
+    }
 }
 
-bool buscarPokemonArvore(Arvore *arvore, const char *nome) {
-    No *atual = arvore->raiz;
-    while (atual != NULL) {
-        arvore->numComparacoes++;
-        int cmp = strcmp(nome, atual->pokemon.nomePokemon);
-        if (cmp == 0) {
-            return true;
-        } else if (cmp < 0) {
-            atual = atual->esq;
-        } else {
-            atual = atual->dir;
+No *buscar_na_tabela(TabelaHash *hash, const char *nome)
+{
+    int indice = calcular_indice_hash(nome);
+    No *atual = hash->tabela[indice];
+
+    while (atual != NULL)
+    {
+        hash->comparacoes++; // Incrementa o contador de comparações
+
+        if (strcmp(atual->nome, nome) == 0)
+        {
+            return atual; // Retorna o nó encontrado
+        }
+
+        atual = atual->prox;
+    }
+
+    return NULL; // Retorna NULL se o nome não for encontrado
+}
+
+
+
+
+void inserir_na_tabela_por_id(TabelaHash *hash, const char *id, Pokemon *pokemons, int numPokemons)
+{
+    // Procura o Pokémon no array pelo ID
+    for (int i = 0; i < numPokemons; i++)
+    {
+        if (strcmp(pokemons[i].id, id) == 0)
+        {
+            // Se o ID for encontrado, insere o nome correspondente na tabela
+            inserir_na_tabela(hash, pokemons[i].nomePokemon);
+            return;
         }
     }
-    return false;
-}
 
-// MÉTODO PARA CRIAR O LOG ----------------------------------------------------------------------------------------------------------
-
-void criarLog(double tempoExecucao, int comparacoes, int movimentacoes, const char *arquivo) {
-    FILE *fp = fopen(arquivo, "w");
-    if (fp == NULL) {
-        printf("Erro ao criar o arquivo de log\n");
-        return;
-    }
-    fprintf(fp, "Tempo de Execução: %lf segundos\n", tempoExecucao);
-    fprintf(fp, "Número de Comparações: %d\n", comparacoes);
-    fprintf(fp, "Número de Movimentações: %d\n", movimentacoes);
-    fclose(fp);
+    printf("ID %s não encontrado no array de Pokémons.\n", id);
 }

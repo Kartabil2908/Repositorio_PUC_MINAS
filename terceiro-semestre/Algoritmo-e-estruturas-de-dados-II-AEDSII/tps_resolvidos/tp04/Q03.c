@@ -5,7 +5,7 @@
 #include <time.h>
 #include <ctype.h>
 
-#define ARQUIVO_CAMINHO "tmp/pokemon.csv"
+#define ARQUIVO_CAMINHO "/tmp/pokemon.csv"
 #define MAX_POKEMONS 801
 #define MAX_BUFFER 1000
 #define MAX_LISTA 50
@@ -66,7 +66,7 @@ char *encontrar_separador(char **, const char *);
 void preencher_array_pokemons(Pokemon[]);
 void exibir_pokemon(Pokemon pokemon);
 
-Pokemon buscarPokemonPorId(const char* id, Pokemon* pokemons, int numPokemons);
+Pokemon buscarPokemonPorId(const char *id, Pokemon *pokemons, int numPokemons);
 void inserirPokemonArvore(Arvore *arvore, Pokemon pokemon);
 bool buscarPokemonArvore(Arvore *arvore, const char *nome);
 void inicializarArvore(Arvore *arvore);
@@ -74,40 +74,80 @@ void inicializarArvore(Arvore *arvore);
 // Funções AVL
 int altura(No *n);
 int max(int a, int b);
-No* rotacaoDireita(No *y);
-No* rotacaoEsquerda(No *x);
+No *rotacaoDireita(No *y);
+No *rotacaoEsquerda(No *x);
 int getBalanceamento(No *n);
-No* balancearArvore(No *n, Pokemon pokemon);
-No* inserirNoAVL(No* no, Pokemon pokemon, Arvore *arvore);
+No *balancearArvore(No *n, Pokemon pokemon);
+No *inserirNoAVL(No *no, Pokemon pokemon, Arvore *arvore);
 
 // MAIN ----------------------------------------------------------------------------------------------------------
 
-int main() {
-    Pokemon basePokemons[MAX_POKEMONS];
+int main()
+{
+
+    char entrada[200];
+    char nome[200];
+    int resposta;
+    int qtddPokemons = 0;
+    int i = 0;
+    int j = 0;
+
     Arvore arvore;
     inicializarArvore(&arvore);
 
-    char entrada[10];
-    int numPokemons = 801;
+    Pokemon pokemons[802];
+    preencher_array_pokemons(pokemons);
 
-    preencher_array_pokemons(basePokemons);
+    Pokemon *temporario = malloc(802 * sizeof(Pokemon));
 
-    // Inserir os Pokémons na árvore
-    for (int i = 0; i < numPokemons; i++) {
-        arvore.raiz = inserirNoAVL(arvore.raiz, basePokemons[i], &arvore);
+    scanf("%s", entrada);
+
+    while (strcmp(entrada, "FIM") != 0)
+    {
+        for (i = 0; i < 802; i++)
+        {
+            resposta = strcmp(pokemons[i].id, entrada);
+
+            if (resposta == 0)
+            {
+                temporario[j] = pokemons[i];
+                qtddPokemons++;
+                j++;
+            }
+        }
+        scanf("%s", entrada);
     }
+
+    Pokemon pokemonsEntrada[qtddPokemons];
+
+    for (i = 0; i < qtddPokemons; i++)
+    {
+        pokemonsEntrada[i] = temporario[i];
+    }
+
+    free(temporario);
 
     // Medir o tempo de execução
     clock_t inicio = clock();
 
-    while (1) {
-        scanf("%s", entrada);
-        if (strcmp(entrada, "FIM") == 0) break;
-        
-        bool encontrado = buscarPokemonArvore(&arvore, entrada);
-        if (encontrado) {
+    for (i = 0; i < qtddPokemons; i++)
+    {
+        arvore.raiz = inserirNoAVL(arvore.raiz, pokemonsEntrada[i], &arvore);
+    }
+
+    while (1)
+    {
+        scanf("%s", nome);
+        if (strcmp(nome, "FIM") == 0)
+            break;
+
+        bool encontrado = buscarPokemonArvore(&arvore, nome);
+        if (encontrado)
+        {
             printf("SIM\n");
-        } else {
+        }
+        else
+        {
             printf("NAO\n");
         }
     }
@@ -115,12 +155,8 @@ int main() {
     clock_t fim = clock();
     double tempoExecucao = (double)(fim - inicio) / CLOCKS_PER_SEC;
 
-    // Criar o arquivo de log
-    criarLog(tempoExecucao, arvore.numComparacoes, arvore.numMovimentacoes, "matricula_avl.txt");
-
-    return 0;
+    criarLog(tempoExecucao, arvore.numComparacoes, arvore.numMovimentacoes, "1449304_avl.txt");
 }
-
 // MAIN ----------------------------------------------------------------------------------------------------------
 
 // MÉTODOS DE LISTA DE HABILIDADES ----------------------------------------------------------------------------------------------------------
@@ -143,7 +179,7 @@ char *remover_espaco(char *entrada)
     if (saida)
     {
         strncpy(saida, inicio, tamanho);
-        saida[tamanho] = '\0'; 
+        saida[tamanho] = '\0';
     }
     return saida;
 }
@@ -441,14 +477,16 @@ void exibir_pokemon(Pokemon pokemon)
 
 // MÉTODOS DA ÁRVORE BINÁRIA ----------------------------------------------------------------------------------------------------------
 
-void inicializarArvore(Arvore *arvore) {
+void inicializarArvore(Arvore *arvore)
+{
     arvore->raiz = NULL;
     arvore->numComparacoes = 0;
     arvore->numMovimentacoes = 0;
 }
 
-No* criarNo(Pokemon pokemon) {
-    No* novoNo = (No*)malloc(sizeof(No));
+No *criarNo(Pokemon pokemon)
+{
+    No *novoNo = (No *)malloc(sizeof(No));
     novoNo->pokemon = pokemon;
     novoNo->esq = NULL;
     novoNo->dir = NULL;
@@ -456,30 +494,36 @@ No* criarNo(Pokemon pokemon) {
     return novoNo;
 }
 
-int altura(No *n) {
+int altura(No *n)
+{
     if (n == NULL)
         return 0;
     return n->altura;
 }
 
-int max(int a, int b) {
+int max(int a, int b)
+{
     return (a > b) ? a : b;
 }
 
-No* rotacaoDireita(No *y) {
+No *rotacaoDireita(No *y)
+{
     No *x = y->esq;
     No *T2 = x->dir;
 
     x->dir = y;
     y->esq = T2;
 
-    y->altura = max(altura(y->esq), altura(y->dir)) + 1;
+    y->altura = max(altura(y->esq), 
+    
+    (y->dir)) + 1;
     x->altura = max(altura(x->esq), altura(x->dir)) + 1;
 
     return x;
 }
 
-No* rotacaoEsquerda(No *x) {
+No *rotacaoEsquerda(No *x)
+{
     No *y = x->dir;
     No *T2 = y->esq;
 
@@ -492,13 +536,15 @@ No* rotacaoEsquerda(No *x) {
     return y;
 }
 
-int getBalanceamento(No *n) {
+int getBalanceamento(No *n)
+{
     if (n == NULL)
         return 0;
     return altura(n->esq) - altura(n->dir);
 }
 
-No* balancearArvore(No *n, Pokemon pokemon) {
+No *balancearArvore(No *n, Pokemon pokemon)
+{
     int balanceamento = getBalanceamento(n);
 
     if (balanceamento > 1 && strcmp(pokemon.nomePokemon, n->esq->pokemon.nomePokemon) < 0)
@@ -507,12 +553,14 @@ No* balancearArvore(No *n, Pokemon pokemon) {
     if (balanceamento < -1 && strcmp(pokemon.nomePokemon, n->dir->pokemon.nomePokemon) > 0)
         return rotacaoEsquerda(n);
 
-    if (balanceamento > 1 && strcmp(pokemon.nomePokemon, n->esq->pokemon.nomePokemon) > 0) {
+    if (balanceamento > 1 && strcmp(pokemon.nomePokemon, n->esq->pokemon.nomePokemon) > 0)
+    {
         n->esq = rotacaoEsquerda(n->esq);
         return rotacaoDireita(n);
     }
 
-    if (balanceamento < -1 && strcmp(pokemon.nomePokemon, n->dir->pokemon.nomePokemon) < 0) {
+    if (balanceamento < -1 && strcmp(pokemon.nomePokemon, n->dir->pokemon.nomePokemon) < 0)
+    {
         n->dir = rotacaoDireita(n->dir);
         return rotacaoEsquerda(n);
     }
@@ -520,7 +568,8 @@ No* balancearArvore(No *n, Pokemon pokemon) {
     return n;
 }
 
-No* inserirNoAVL(No* no, Pokemon pokemon, Arvore *arvore) {
+No *inserirNoAVL(No *no, Pokemon pokemon, Arvore *arvore)
+{
     if (no == NULL)
         return criarNo(pokemon);
 
@@ -537,16 +586,27 @@ No* inserirNoAVL(No* no, Pokemon pokemon, Arvore *arvore) {
     return balancearArvore(no, pokemon);
 }
 
-bool buscarPokemonArvore(Arvore *arvore, const char *nome) {
+bool buscarPokemonArvore(Arvore *arvore, const char *nome)
+{
+    printf("%s\n", nome);
+    printf("raiz ");
     No *atual = arvore->raiz;
-    while (atual != NULL) {
+    while (atual != NULL)
+    {
         arvore->numComparacoes++;
         int cmp = strcmp(nome, atual->pokemon.nomePokemon);
-        if (cmp == 0) {
+        if (cmp == 0)
+        {
             return true;
-        } else if (cmp < 0) {
+        }
+        else if (cmp < 0)
+        {
+            printf("esq ");
             atual = atual->esq;
-        } else {
+        }
+        else
+        {
+            printf("dir ");
             atual = atual->dir;
         }
     }
@@ -555,9 +615,11 @@ bool buscarPokemonArvore(Arvore *arvore, const char *nome) {
 
 // MÉTODO PARA CRIAR O LOG ----------------------------------------------------------------------------------------------------------
 
-void criarLog(double tempoExecucao, int comparacoes, int movimentacoes, const char *arquivo) {
+void criarLog(double tempoExecucao, int comparacoes, int movimentacoes, const char *arquivo)
+{
     FILE *fp = fopen(arquivo, "w");
-    if (fp == NULL) {
+    if (fp == NULL)
+    {
         printf("Erro ao criar o arquivo de log\n");
         return;
     }
