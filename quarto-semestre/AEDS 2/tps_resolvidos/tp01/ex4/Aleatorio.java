@@ -13,8 +13,8 @@ public class Aleatorio {
         gerador.setSeed(4);
 
         
-        char letra1 = (char) ('a' + gerador.nextInt(26)); 
-        char letra2 = (char) ('a' + gerador.nextInt(26)); 
+        char letra1 = (char)('a' + (Math.abs(gerador.nextInt()) % 26));
+        char letra2 = (char)('a' + (Math.abs(gerador.nextInt()) % 26));
 
        
         char[] fraseEntrada = Entrada.toCharArray();
