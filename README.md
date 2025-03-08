@@ -198,12 +198,12 @@ Para dúvidas, sugestões ou colaborações relacionadas a este repositório:
 
 - **GitHub**: [@Kartabil2908](https://github.com/Kartabil2908)
 - **Email**: [beladeira1.000@gmail.com] 
-- **LinkedIn**: [Bernardo Ladeira Borges Kartabil](www.linkedin.com/in/bernardo-ladeira-kartabil-874ab5299)
+- **LinkedIn**: [Bernardo Ladeira Borges Kartabil](www.linkedin.com/in/bernardo-ladeira-borges-kartabil) //www.linkedin.com/in/bernardo-ladeira-borges-kartabil
 
 ## 🎓 Sobre a PUC Minas
 
 <div align="center">
-  <img src="https://github.com/Kartabil2908/Repositorio_PUC_MINAS/raw/main/assets/logo-puc-minas.png" alt="Logo PUC Minas" width="200"/>
+  <img src="https://github.com/Kartabil2908/Repositorio_PUC_MINAS/raw/main/assets/logo-puc-minas.jpg" alt="Logo PUC Minas" width="200"/>
   <p>
     A <strong>Pontifícia Universidade Católica de Minas Gerais (PUC Minas)</strong> é uma das mais prestigiadas instituições de ensino superior do Brasil, fundada em 1958.
   </p>
