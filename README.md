@@ -1,10 +1,7 @@
 # Repositório PUC MINAS
-![image](https://github.com/user-attachments/assets/869e7d41-92ea-4a67-a08d-2c67eff67638)
 
 <div align="center">
-  <img src="![Uploading image.png…]()
-
-" alt="Logo PUC Minas" width="200"/>
+  <img src="https://github.com/Kartabil2908/Repositorio_PUC_MINAS/raw/main/assets/logo-puc-minas.jpg" alt="Logo PUC Minas" width="200"/>
   <p><em>Excelência acadêmica e desenvolvimento profissional</em></p>
 </div>
 
@@ -35,6 +32,8 @@ O repositório segue uma estrutura hierárquica organizada primariamente por per
 Repositorio_PUC_MINAS/
 ├── README.md                           # Este documento
 ├── LICENSE                             # Informações sobre licenciamento
+├── assets/                             # Pasta para armazenar imagens e recursos
+│   └── logo-puc-minas.png              # Logo da PUC Minas
 │
 ├── Periodo1/                           # Primeiro período do curso
 │   ├── AED1_AlgoritmosEstruturaDados/  # Exemplo de disciplina
@@ -225,6 +224,7 @@ Para dúvidas, sugestões ou colaborações relacionadas a este repositório:
 ## 🎓 Sobre a PUC Minas
 
 <div align="center">
+  <img src="https://github.com/Kartabil2908/Repositorio_PUC_MINAS/raw/main/assets/logo-puc-minas.png" alt="Logo PUC Minas" width="200"/>
   <p>
     A <strong>Pontifícia Universidade Católica de Minas Gerais (PUC Minas)</strong> é uma das mais prestigiadas instituições de ensino superior do Brasil, fundada em 1958.
   </p>
