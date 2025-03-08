@@ -1,7 +1,8 @@
 # Repositório PUC MINAS
 
 <div align="center">
-  <img src="https://www.pucminas.br/Style%20Library/images/logoPucMinas.png" alt="Logo PUC Minas" width="200"/>
+  <img src="![image](https://github.com/user-attachments/assets/29853648-fb8b-4028-9db1-24b0dc2d036c)
+" alt="Logo PUC Minas" width="200"/>
   <p><em>Excelência acadêmica e desenvolvimento profissional</em></p>
 </div>
 
