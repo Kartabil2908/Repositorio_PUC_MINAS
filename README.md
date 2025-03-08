@@ -104,21 +104,14 @@ Este repositório abrange diversas tecnologias utilizadas ao longo do curso, dep
 
 ### Frameworks e Bibliotecas
 - **Spring Boot**: Para desenvolvimento de aplicações Java
-- **Angular/React**: Para desenvolvimento de interfaces web
 - **Node.js**: Para aplicações server-side em JavaScript
-- **TensorFlow/PyTorch**: Para projetos de Machine Learning
-- **Django/Flask**: Para aplicações web em Python
 
 ### Bancos de Dados
 - **MySQL/PostgreSQL**: Bancos de dados relacionais
-- **MongoDB**: Banco de dados NoSQL
-- **Redis**: Para armazenamento em cache
 
 ### Ferramentas de Desenvolvimento
 - **Git/GitHub**: Para controle de versão e colaboração
-- **Docker**: Para conteinerização de aplicações
 - **Maven/Gradle**: Para gerenciamento de dependências em Java
-- **JUnit/TestNG**: Para testes automatizados
 - **Postman**: Para testes de API
 
 ### Metodologias
@@ -134,7 +127,6 @@ Dependendo do projeto ou exercício específico, você poderá precisar de:
 
 - JDK (Java Development Kit) - versões 8 a 17
 - Compiladores C/C++ (GCC, G++)
-- Python 3.x e gerenciadores de pacotes (pip, conda)
 - Node.js e npm/yarn
 - IDEs específicas (Eclipse, IntelliJ IDEA, Visual Studio Code, etc.)
 - Servidores de banco de dados
@@ -173,15 +165,10 @@ Cada projeto pode ter requisitos específicos para execução. Geralmente, você
 
 ## 📊 Estatísticas e Métricas
 
-### Disciplinas Cursadas
+### Disciplinas Cursadas // A SER ATUALIZADO
 - Total de disciplinas: [Número]
 - Disciplinas técnicas: [Número]
 - Disciplinas teóricas: [Número]
-
-### Volume de Código
-- Linhas de código totais: [Aproximado]
-- Arquivos de código: [Aproximado]
-- Linguagens utilizadas: [Número]
 
 ## 🤝 Contribuições e Feedback
 
@@ -201,15 +188,7 @@ Este repositório reflete minha jornada acadêmica pessoal, mas reconheço o val
 - Sugestões de novos exercícios ou abordagens alternativas
 - Traduções de documentação
 
-## 📜 Licença
-
-Este projeto está licenciado sob a [Licença MIT](LICENSE) - veja o arquivo LICENSE para detalhes.
-
-A Licença MIT permite que qualquer pessoa:
-- Use o código comercialmente
-- Modifique o código
-- Distribua o código
-- Use em projetos privados
+## 📜 Licença // 
 
 A única exigência é manter o aviso de copyright e a licença no código.
 
@@ -218,8 +197,8 @@ A única exigência é manter o aviso de copyright e a licença no código.
 Para dúvidas, sugestões ou colaborações relacionadas a este repositório:
 
 - **GitHub**: [@Kartabil2908](https://github.com/Kartabil2908)
-- **Email**: [seu.email@exemplo.com] *(Substitua pelo seu email real)*
-- **LinkedIn**: [Seu Nome](https://www.linkedin.com/in/seu-perfil/) *(Substitua pelo seu perfil)*
+- **Email**: [beladeira1.000@gmail.com] 
+- **LinkedIn**: [Bernardo Ladeira Borges Kartabil](www.linkedin.com/in/bernardo-ladeira-kartabil-874ab5299)
 
 ## 🎓 Sobre a PUC Minas
 
@@ -236,20 +215,6 @@ Para dúvidas, sugestões ou colaborações relacionadas a este repositório:
 - Campi em diversas cidades de Minas Gerais
 - Cursos de graduação, pós-graduação, mestrado e doutorado
 - Forte atuação em pesquisa e extensão universitária
-
-### Links Úteis
-- [Site Oficial da PUC Minas](https://www.pucminas.br/)
-- [Portal do Aluno](https://sga.pucminas.br/)
-- [Biblioteca](https://www.pucminas.br/biblioteca/)
-
-## 📅 Histórico de Atualizações
-
-| Data | Versão | Descrição |
-|------|--------|-----------|
-| DD/MM/AAAA | 1.0 | Versão inicial do repositório |
-| DD/MM/AAAA | 1.1 | Adição dos projetos do Período 1 |
-| DD/MM/AAAA | 1.2 | Inclusão dos trabalhos de POO |
-| DD/MM/AAAA | 2.0 | Reestruturação do repositório e padronização |
 
 ---
 
