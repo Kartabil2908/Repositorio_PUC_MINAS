@@ -1,6 +1,6 @@
 import java.io.*;
 
-public class ProcessadorULA {
+public class ProcessadorULAV2 {
     
     // Função para retornar a expressão correspondente ao mnemônico
     public static char expressao(String mnemonico) {
@@ -25,29 +25,42 @@ public class ProcessadorULA {
         }
     }
 
+    public static String converterParaHex(String valor) {
+        switch (valor) {
+            case "10": return "A";
+            case "11": return "B";
+            case "12": return "C";
+            case "13": return "D";
+            case "14": return "E";
+            case "15": return "F";
+            default: return valor; // Retorna o próprio valor se não estiver no intervalo
+        }
+    }
+
     public static void main(String[] args) {
         // Variáveis para armazenar os valores de X, Y e W, além de A e B
         String x = "0", y = "0", w = "0", A = "0", B = "0";
 
         try {
             // Leitura do arquivo de entrada
-            BufferedReader arquivo = new BufferedReader(new FileReader("testeula.ula"));
+            BufferedReader arquivo = new BufferedReader(new FileReader("TESTEULA.ULA"));
             BufferedWriter arquivoHex = new BufferedWriter(new FileWriter("testeula.hex"));
 
             String linha;
             // Lê cada linha do arquivo
             while ((linha = arquivo.readLine()) != null) {
                 // Verifica se a linha contém X, Y ou W e atribui à variável correspondente
-                if (linha.startsWith("X=")) {
+                if (linha.startsWith("A=")) {
                     x = linha.substring(2).replace(";", "");
-                } else if (linha.startsWith("Y=")) {
+                } else if (linha.startsWith("B=")) {
                     y = linha.substring(2).replace(";", "");
                 } else if (linha.startsWith("W=")) {
                     String mnemonico = linha.substring(2).replace(";", "");
 
+
                     // Define A e B como valores baseados em X e Y
-                    A = x;
-                    B = y;
+                    A = converterParaHex(x);
+                    B = converterParaHex(y);
 
                     // Resolve a expressão de acordo com o mnemônico
                     w = String.valueOf(expressao(mnemonico));
