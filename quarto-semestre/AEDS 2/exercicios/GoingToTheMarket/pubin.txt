@@ -1,0 +1,86 @@
+10
+3
+maçã 2.50
+banana 1.80
+laranja 3.20
+2
+maçã 2
+banana 3
+3
+manga 4.50
+abacaxi 5.00
+kiwi 6.00
+1
+abacaxi 2
+4
+maçã 2.50
+banana 1.80
+melancia 7.30
+pera 3.00
+3
+maçã 2
+melancia 1
+pera 2
+2
+morango 5.00
+uva 4.50
+2
+morango 1
+uva 2
+5
+abacaxi 6.50
+pêssego 4.00
+melão 3.50
+manga 5.00
+banana 2.80
+3
+abacaxi 2
+manga 1
+banana 3
+4
+maçã 3.00
+laranja 2.80
+kiwi 5.50
+uva 4.50
+3
+laranja 2
+kiwi 1
+uva 2
+2
+maçã 1.50
+melancia 6.80
+2
+maçã 3
+melancia 1
+4
+abacaxi 4.00
+banana 2.50
+morango 3.70
+uva 5.20
+3
+banana 1
+morango 2
+uva 1
+3
+abacaxi 5.50
+kiwi 4.20
+laranja 2.40
+1
+kiwi 2
+2
+pêssego 3.00
+manga 5.00
+2
+pêssego 2
+manga 1
+5
+pera 2.80
+melão 3.90
+manga 4.00
+abacaxi 3.50
+banana 2.20
+4
+pera 2
+manga 1
+abacaxi 1
+banana 3
