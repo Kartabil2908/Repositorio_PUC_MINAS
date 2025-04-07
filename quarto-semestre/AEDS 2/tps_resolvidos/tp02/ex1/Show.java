@@ -104,6 +104,8 @@ public class Show
             String showId, type, title;
             String line;
             String[] tmp = new String[4];
+            
+    
 
             
             // lendo os campos showId,type e title
@@ -115,18 +117,20 @@ public class Show
             type = tmp[1];
             title = tmp[2];
             
-            // System.out.println(showId +"\n" + type +"\n" + title + "\n" + tmp[3]); // logs
+            System.out.println(showId +"\n" + type +"\n" + title + "\n" + tmp[3]); // logs
 
 
 
 
             // Ler o campo director
 
-            String[] director;
+            ArrayList<String> director = new ArrayList<String>();
 
-            director = tmp[3].split("", 3);
+            String[] tmp2 = new String[4]; // para guardar a string dos diretores
 
-            System.out.println(director[1]);
+            tmp2 = tmp[3].split("\"", 3);
+
+            //System.out.println("\n" + tmp2[1]); mostra os diretores no tmp2[1]
 
 
 
