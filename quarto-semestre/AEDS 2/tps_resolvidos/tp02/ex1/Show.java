@@ -117,20 +117,46 @@ public class Show
             type = tmp[1];
             title = tmp[2];
             
-            System.out.println(showId +"\n" + type +"\n" + title + "\n" + tmp[3]); // logs
-
+            System.out.println(showId +"\n" + type +"\n" + title + "\n" + tmp[3]+ "\n"); // logs
+            
+            //System.out.println(tmp[3].charAt(0));
 
 
 
             // Ler o campo director
 
-            ArrayList<String> director = new ArrayList<String>();
+            
 
-            String[] tmp2 = new String[4]; // para guardar a string dos diretores
+            //Se o campo dos diretores tiver mais de 1 valor
 
-            tmp2 = tmp[3].split("\"", 3);
+            if(tmp[3].charAt(0) == '\"')
+            {
 
-            //System.out.println("\n" + tmp2[1]); mostra os diretores no tmp2[1]
+                
+                String[] tmp2 = new String[4]; // para guardar a string dos diretores
+
+                tmp2 = tmp[3].split("\"", 3);
+
+                //System.out.println("\n" + tmp2[1]); // mostra os diretores no tmp2[1]
+
+
+                String director[] = tmp2[1].split(",");
+                
+
+
+
+                for(int i = 0; i < director.length; i++)
+                {
+
+                    System.out.print(director[i]);
+                    System.out.print('a');
+                }
+
+                // guardando os diretores no Array List;
+                
+            }
+            
+            
 
 
 
