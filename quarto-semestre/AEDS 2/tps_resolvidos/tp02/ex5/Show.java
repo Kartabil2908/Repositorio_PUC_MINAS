@@ -1,7 +1,10 @@
-import java.io.*; 
+
+// NESSE EXERCÍCIO, EU MODIFIQUEI ALGUMAS FUNÇÕES PARA FICAR MAIS SIMPLES DE MANUSEÁ-LAS MELHOR 
+
+import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.*; 
-import java.nio.charset.StandardCharsets; 
+import java.util.*;
+import java.nio.charset.StandardCharsets;
 
 public class Show {
 
@@ -107,6 +110,9 @@ public class Show {
       this.listedIn = listedIn;
    }
 
+
+   // ================================================== FUNÇÃO IMPRIMIR ================================================== //
+
    // Método responsável por imprimir todos os dados de um objeto Show formatados
 
    public void imprimir() {
@@ -182,40 +188,54 @@ public class Show {
          System.out.print("NaN ##");
       }
 
-      System.out.println(); 
+      System.out.println();
    }
 
-   // Método para ler IDs informados no console e buscar os shows correspondentes
-   public static void ler(Show[] shows) {
+   // ================================================== FUNÇÃO LER ENTRADA ================================================== //
 
-      Scanner scanner = new Scanner(System.in);
-      String inputId;
+   // método para ler e retornar os shows com base no id, fica mais fácil de
+   // manipular em outras funções;
+   public static Show[] lerEntrada(Show[] showCSV, Scanner scanner) {
 
-      while (true) {
-         inputId = scanner.nextLine();
+      // Vetor temporário para armazenar os IDs digitados
+      String[] tmp = new String[showCSV.length];
+      int contadorEntrada = 0;
 
-         if (inputId.equals("FIM")) {
-            break;
-         }
+      // Lê a primeira entrada
+      tmp[contadorEntrada] = scanner.nextLine();
 
-         boolean encontrado = false;
+      // Continua lendo até encontrar "FIM"
+      while (!tmp[contadorEntrada].equals("FIM")) {
+         contadorEntrada++;
+         tmp[contadorEntrada] = scanner.nextLine();
+      }
 
-         for (Show show : shows) {
-            if (show.getShowId().equals(inputId.trim())) { // Compara IDs
-               show.imprimir(); // Imprime se encontrou
-               encontrado = true;
-               break;
+      // Cria um vetor com o número exato de entradas válidas
+      String[] entrada = new String[contadorEntrada];
+      for (int i = 0; i < contadorEntrada; i++) {
+         entrada[i] = tmp[i];
+      }
+
+      // Cria um vetor para armazenar os shows filtrados
+      Show[] showFiltrado = new Show[contadorEntrada];
+
+      // Para cada ID de entrada, busca o Show correspondente
+      for (int i = 0; i < contadorEntrada; i++) {
+         String idBuscado = entrada[i].trim();
+
+         for (Show show : showCSV) {
+            if (show.getShowId().equals(idBuscado)) {
+               showFiltrado[i] = show;
+               break; // Para o loop interno ao encontrar o ID
             }
-         }
-
-         if (!encontrado) {
-            // Imprime linha padrão se não encontrou
-            System.out.println("=> " + inputId + " ## NaN ## NaN ## NaN ## NaN ## NaN ## NaN ## 0 ## NaN ## NaN ## NaN ##");
          }
       }
 
-      scanner.close();
+      return showFiltrado;
    }
+
+
+   // ================================================== FUNÇÃO LER O CSV ================================================== //
 
    // Lê o arquivo CSV e cria objetos Show para cada linha
    public static Show[] readShowsFromCSV(String caminhoCSV) {
@@ -227,7 +247,8 @@ public class Show {
          String linha;
 
          while ((linha = leitor.readLine()) != null) {
-            // Expressão regular para separar campos entre vírgulas, respeitando valores entre aspas
+            // Expressão regular para separar campos entre vírgulas, respeitando valores
+            // entre aspas
             String[] campos = linha.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
             Show show = new Show(); // Cria novo objeto Show
@@ -333,12 +354,75 @@ public class Show {
       }
 
       return listaShows.toArray(new Show[0]); // Converte lista para array
+
    }
 
-   // MAIN
+
+   // ================================================== FUNÇÃO DE ORDENAÇÃO ==================================================
+
+
+   public static void ordenarSelecaoTitle(Show[] shows) {
+      Show menorShow;
+      int comparacoes = 0;
+      int movimentacoes = 0;
+      long inicio = System.nanoTime(); // Tempo inicial
+  
+      for (int i = 0; i < shows.length - 1; i++) {
+          menorShow = shows[i];  // Inicializa o menorShow como o atual
+          int indiceMenor = i;   // Guarda o índice do menor show
+  
+          for (int j = i + 1; j < shows.length; j++) {
+              comparacoes++; // Incrementa a cada comparação entre títulos
+  
+              if (menorShow.title.trim().compareToIgnoreCase(shows[j].title.trim()) > 0) {
+                  menorShow = shows[j];
+                  indiceMenor = j;
+              }
+          }
+  
+          // Troca os elementos, se necessário
+          if (indiceMenor != i) {
+              Show temp = shows[i];
+              shows[i] = shows[indiceMenor];
+              shows[indiceMenor] = temp;
+  
+              movimentacoes += 3; // Considera 3 movimentações
+          }
+      }
+  
+      long fim = System.nanoTime();
+      long tempoExecucao = (fim - inicio) / 1_000_000; // tempo em milissegundos
+  
+      try {
+          FileWriter fw = new FileWriter("838966_selecao.txt");
+          fw.write("838966" + "\t" + comparacoes + "\t" + movimentacoes + "\t" + tempoExecucao);
+          fw.close();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+  }
+  
+
+   // ================================================== FUNÇÃO MAIN ==================================================
    public static void main(String[] args) {
+
+      Scanner scanner = new Scanner(System.in);
       System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
-      Show[] shows = Show.readShowsFromCSV("tmp\\disneyplus.csv"); // "/tmp/disneyplus.csv" no verde
-      Show.ler(shows);
+
+      Show[] shows = Show.readShowsFromCSV("/tmp/disneyplus.csv");
+
+      Show[] showFiltrado = lerEntrada(shows, scanner);
+
+      Show.ordenarSelecaoTitle(showFiltrado);
+
+      for(int i = 0; i < showFiltrado.length; i++)
+      {
+         showFiltrado[i].imprimir();
+      }
+
+     
+      
    }
+
+   
 }

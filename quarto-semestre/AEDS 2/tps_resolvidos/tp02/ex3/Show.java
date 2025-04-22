@@ -1,7 +1,10 @@
-import java.io.*; 
+
+// NESSE EXERCÍCIO, EU MODIFIQUEI ALGUMAS FUNÇÕES PARA FICAR MAIS SIMPLES DE MANUSEÁ-LAS MELHOR 
+
+import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.*; 
-import java.nio.charset.StandardCharsets; 
+import java.util.*;
+import java.nio.charset.StandardCharsets;
 
 public class Show {
 
@@ -182,39 +185,48 @@ public class Show {
          System.out.print("NaN ##");
       }
 
-      System.out.println(); 
+      System.out.println();
    }
 
-   // Método para ler IDs informados no console e buscar os shows correspondentes
-   public static void ler(Show[] shows) {
+   // método para ler e retornar os shows com base no id, fica mais fácil de
+   // manipular em outras funções;
+   public static Show[] lerEntrada(Show[] showCSV, Scanner scanner) {
 
-      Scanner scanner = new Scanner(System.in);
-      String inputId;
+      // Vetor temporário para armazenar os IDs digitados
+      String[] tmp = new String[showCSV.length];
+      int contadorEntrada = 0;
 
-      while (true) {
-         inputId = scanner.nextLine();
+      // Lê a primeira entrada
+      tmp[contadorEntrada] = scanner.nextLine();
 
-         if (inputId.equals("FIM")) {
-            break;
-         }
+      // Continua lendo até encontrar "FIM"
+      while (!tmp[contadorEntrada].equals("FIM")) {
+         contadorEntrada++;
+         tmp[contadorEntrada] = scanner.nextLine();
+      }
 
-         boolean encontrado = false;
+      // Cria um vetor com o número exato de entradas válidas
+      String[] entrada = new String[contadorEntrada];
+      for (int i = 0; i < contadorEntrada; i++) {
+         entrada[i] = tmp[i];
+      }
 
-         for (Show show : shows) {
-            if (show.getShowId().equals(inputId.trim())) { // Compara IDs
-               show.imprimir(); // Imprime se encontrou
-               encontrado = true;
-               break;
+      // Cria um vetor para armazenar os shows filtrados
+      Show[] showFiltrado = new Show[contadorEntrada];
+
+      // Para cada ID de entrada, busca o Show correspondente
+      for (int i = 0; i < contadorEntrada; i++) {
+         String idBuscado = entrada[i].trim();
+
+         for (Show show : showCSV) {
+            if (show.getShowId().equals(idBuscado)) {
+               showFiltrado[i] = show;
+               break; // Para o loop interno ao encontrar o ID
             }
-         }
-
-         if (!encontrado) {
-            // Imprime linha padrão se não encontrou
-            System.out.println("=> " + inputId + " ## NaN ## NaN ## NaN ## NaN ## NaN ## NaN ## 0 ## NaN ## NaN ## NaN ##");
          }
       }
 
-      scanner.close();
+      return showFiltrado;
    }
 
    // Lê o arquivo CSV e cria objetos Show para cada linha
@@ -227,7 +239,8 @@ public class Show {
          String linha;
 
          while ((linha = leitor.readLine()) != null) {
-            // Expressão regular para separar campos entre vírgulas, respeitando valores entre aspas
+            // Expressão regular para separar campos entre vírgulas, respeitando valores
+            // entre aspas
             String[] campos = linha.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
             Show show = new Show(); // Cria novo objeto Show
@@ -333,12 +346,69 @@ public class Show {
       }
 
       return listaShows.toArray(new Show[0]); // Converte lista para array
+
+   }
+
+   public static void pesquisaSequencialTitulo(Show[] vetor, Scanner scanner) {
+      ArrayList<String> pesquisas = new ArrayList<>();
+      String entrada;
+   
+      // Queima a linha "FIM" que foi deixada pelo método lerEntrada
+      if (scanner.hasNextLine()) {
+         scanner.nextLine();
+      }
+   
+      // Lê os títulos até encontrar "FIM"
+      while (scanner.hasNextLine() && !(entrada = scanner.nextLine()).equals("FIM")) {
+         pesquisas.add(entrada.trim());
+      }
+   
+      int comparacoes = 0;
+      long inicio = System.nanoTime(); // Tempo inicial
+   
+      for (String tituloBuscado : pesquisas) {
+         boolean encontrado = false;
+   
+         for (Show show : vetor) {
+            comparacoes++;
+            if (show != null && show.getTitle().equals(tituloBuscado)) {
+               encontrado = true;
+               break;
+            }
+         }
+   
+         if (encontrado) {
+            System.out.println("SIM");
+         } else {
+            System.out.println("NAO");
+         }
+      }
+   
+      long fim = System.nanoTime();
+      long tempoExecucao = (fim - inicio) / 1_000_000;
+   
+      try {
+         FileWriter fw = new FileWriter("838966_sequencial.txt");
+         fw.write("838966" + "\t" + tempoExecucao + "\t" + comparacoes);
+         fw.close();
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
    }
 
    // MAIN
    public static void main(String[] args) {
+
+      Scanner scanner = new Scanner(System.in);
       System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
-      Show[] shows = Show.readShowsFromCSV("tmp\\disneyplus.csv"); // "/tmp/disneyplus.csv" no verde
-      Show.ler(shows);
+
+      Show[] shows = Show.readShowsFromCSV("../tmp/disneyplus.csv");
+
+      Show[] showFiltrado = lerEntrada(shows, scanner);
+
+     
+      Show.pesquisaSequencialTitulo(showFiltrado, scanner);
    }
+
+   
 }
