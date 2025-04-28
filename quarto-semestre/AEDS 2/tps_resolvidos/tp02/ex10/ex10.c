@@ -1,15 +1,4 @@
-/* ============================ OBSERVAÇÕES ============================ */
-/**
- *
- * 
- * Deu o mesmo problema de espaços na hora de ordenar os atores. Porém, 
- * como em C não tem a função "trim",eu mesmo a fiz.Além disso, de agora 
- * em diante, ficarei mais atento à organização do código;
- * 
- * 
- *
- 
-/* ===================================================================== */
+
 
 /* ============================ BIBLIOTECAS E DEFINIÇÕES ============================ */
 
@@ -513,91 +502,102 @@ Show *lerEntrada(Show *shows, int total, int *quantidadeFiltrados)
 
 /* ============================ FUNÇÕES DE ORDENAÇÃO ============================ */
 
-
-
-void swap(Show *a, Show *b)
+void log_quicksort(const char *matricula, long long comparacoes, long long movimentacoes, clock_t inicio)
 {
-    Show temp = *a;
-    *a = *b;
-    *b = temp;
-    movimentacoes++;
-}
-
-int encontrarMenorIndex(Show shows[], int inicio, int n)
-{
-    int indiceMenor = inicio;
-
-    // Compara os títulos dos shows com o título do show no índice "indiceMenor"
-    for (int i = inicio + 1; i < n; i++) {
-        if (compareTrimmedTitles(shows[i].title, shows[indiceMenor].title) < 0) {
-            indiceMenor = i;
-        }
-    }
-
-    return indiceMenor;
-}
-
-// Função recursiva de ordenação por seleção
-void selecaoRecursiva(Show shows[], int inicio, int n, clock_t tempo_inicio, const char *matricula) {
-
-    // condição de parada pra criar o arquivo log
-    if (inicio >= n - 1) {
-        // CASO BASE: Array totalmente ordenado
-        clock_t tempo_fim = clock();
-        double tempo_execucao = ((double)(tempo_fim - tempo_inicio)) / CLOCKS_PER_SEC;
-
-        // Criação do arquivo de log
-        FILE *log = fopen("838966_selecaoRecursiva.txt", "w");
-        if (log == NULL) {
-            printf("Erro ao criar arquivo de log.\n");
-            return;
-        }
-
-        // Supondo que você tenha variáveis "comparacoes" e "movimentacoes"
-        fprintf(log, "%s\t%lld\t%lld\t%lf\n", matricula, comparacoes, movimentacoes, tempo_execucao);
-        fclose(log);
-
+    FILE *logFile = fopen("matricula_quicksort.txt", "a");
+    if (logFile == NULL)
+    {
+        perror("Erro ao abrir o arquivo de log");
         return;
     }
 
-    // Encontrar o índice do menor show a partir do índice "inicio"
-    int indiceMenor = encontrarMenorIndex(shows, inicio, n);
+    clock_t fim = clock();
+    double tempoExecucao = (double)(fim - inicio) / CLOCKS_PER_SEC;
 
-    // Trocar os shows
-    if (indiceMenor != inicio) {
-        swap(&shows[inicio], &shows[indiceMenor]);
+    fprintf(logFile, "%s\t%lld\t%lld\t%.6f\n", matricula, comparacoes, movimentacoes, tempoExecucao);
+    fclose(logFile);
+}
+
+int compareDateAddedAndTitle(const Show *a, const Show *b)
+{
+    // Compara as datas
+    int dateCmp = strcmp(a->dateAdded, b->dateAdded);
+    if (dateCmp != 0)
+    {
+        return dateCmp;
     }
+    
+    // Se as datas forem iguais, compara os títulos
+    return compareTrimmedTitles(a->title, b->title);
+}
 
-    // Chamada recursiva para o próximo índice
-    selecaoRecursiva(shows, inicio + 1, n, tempo_inicio, matricula);
+void quicksort(Show lista[], int esquerda, int direita, const char *matricula)
+{
+    if (esquerda < direita)
+    {
+        int i = esquerda, j = direita;
+        Show pivo = lista[(esquerda + direita) / 2];
+
+        while (i <= j)
+        {
+            // Encontra um elemento maior que o pivo a partir da esquerda
+            while (compareDateAddedAndTitle(&lista[i], &pivo) < 0)
+            {
+                i++;
+            }
+
+            // Encontra um elemento menor que o pivo a partir da direita
+            while (compareDateAddedAndTitle(&lista[j], &pivo) > 0)
+            {
+                j--;
+            }
+
+            if (i <= j)
+            {
+                // Troca os elementos
+                Show temp = lista[i];
+                lista[i] = lista[j];
+                lista[j] = temp;
+
+                i++;
+                j--;
+                movimentacoes += 3; // 3 movimentações por troca (duas no vetor, uma na comparação)
+            }
+
+            comparacoes += 2; // Cada loop realiza duas comparações (uma à esquerda e uma à direita)
+        }
+
+        // Recursão
+        quicksort(lista, esquerda, j, matricula);
+        quicksort(lista, i, direita, matricula);
+    }
 }
 
 /* ============================ FUNÇÃO PRINCIPAL ============================ */
 
 int main()
 {
-    setlocale(LC_ALL, "en_US.UTF-8");
+    
+        // Carrega os shows (ajuste conforme necessário)
+    Show *shows;
+    int total = carregar_shows("../tmp/disneyplus.csv", &shows);
 
-    Show *shows = NULL;
-    int total = carregar_shows("/tmp/disneyplus.csv", &shows);
-
-    int quantidadeFiltrados = 0;
-    char tituloBusca[MAX_STR];
-    const char *matricula = "838966";
-
-    Show *showsFiltrados = lerEntrada(shows, total, &quantidadeFiltrados);
-
-    free(shows);
-
+    // Exemplo de chamada do QuickSort
+    const char *matricula = "123456";  // Substitua pelo número da matrícula
     clock_t inicio = clock();
-    selecaoRecursiva(showsFiltrados, 0, quantidadeFiltrados, inicio, matricula);
+    
+    quicksort(shows, 0, total - 1, matricula);
+    
+    log_quicksort(matricula, comparacoes, movimentacoes, inicio);
 
-    for (int i = 0; i < quantidadeFiltrados; i++)
+    // Exibe os shows ordenados ou faz outra manipulação conforme necessário
+    for (int i = 0; i < total; i++)
     {
-        imprimir_show(showsFiltrados[i]);
+        imprimir_show(shows[i]);
     }
 
-    free(showsFiltrados);
+    // Libera memória
+    free(shows);
 
     return 0;
 }

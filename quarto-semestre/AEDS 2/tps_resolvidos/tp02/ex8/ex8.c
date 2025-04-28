@@ -1,15 +1,4 @@
-/* ============================ OBSERVAÇÕES ============================ */
-/**
- *
- * 
- * Deu o mesmo problema de espaços na hora de ordenar os atores. Porém, 
- * como em C não tem a função "trim",eu mesmo a fiz.Além disso, de agora 
- * em diante, ficarei mais atento à organização do código;
- * 
- * 
- *
- 
-/* ===================================================================== */
+
 
 /* ============================ BIBLIOTECAS E DEFINIÇÕES ============================ */
 
@@ -514,63 +503,87 @@ Show *lerEntrada(Show *shows, int total, int *quantidadeFiltrados)
 /* ============================ FUNÇÕES DE ORDENAÇÃO ============================ */
 
 
+  
+/*Basicamente é um inserion sort, mas com uma "espassada" entre os elementos:
+  
+Fiz esse exemplo com números pra entender, pois tive difuculdade para implementar com os types e títulos.
 
-void swap(Show *a, Show *b)
+Execução com 5 Elementos
+Vetor inicial: [12, 34, 54, 2, 3]
+
+1. passos = 2
+    i = 2 → sem troca (12 < 54)
+    i = 3 → troca 34 e 2, depois 12 e 2
+    i = 4 → troca 54 e 3, depois 34 e 3
+Vetor: [2, 34, 3, 12, 54]
+
+    2. passos = 1 (insertion sort)
+    i = 1 → sem troca
+    i = 2 → troca 34 e 3
+    i = 3 → troca 34 e 12, depois 12 e 3
+    i = 4 → sem troca
+Vetor final: [2, 3, 12, 34, 54]*/
+
+void shellsort(Show lista[], int total, const char *matricula)
 {
-    Show temp = *a;
-    *a = *b;
-    *b = temp;
-    movimentacoes++;
-}
+    clock_t inicio = clock();
 
-int encontrarMenorIndex(Show shows[], int inicio, int n)
-{
-    int indiceMenor = inicio;
+    // Começa com um passo maior e vai diminuindo
+    for (int passo = total / 2; passo > 0; passo /= 2)
+    {
+        // Passa por cada elemento da lista, começando a partir do passo
+        for (int i = passo; i < total; i++)
+        {
+            Show atual = lista[i];
 
-    // Compara os títulos dos shows com o título do show no índice "indiceMenor"
-    for (int i = inicio + 1; i < n; i++) {
-        if (compareTrimmedTitles(shows[i].title, shows[indiceMenor].title) < 0) {
-            indiceMenor = i;
+            int j = i;// Inicializa j com o valor de i, que é o ponto de comparação
+
+            
+            while (j >= passo) // Enquanto houver elementos anteriores a "j" e for possível mover o atual
+            {
+                comparacoes++;
+
+                // Compara os elementos pelo "type" primeiro
+                int comparaTipo = compareIgnoreCase(lista[j - passo].type, atual.type);
+                
+                // Se "type" for igual, compara o "title"
+                int comparaTitulo = compareTrimmedTitles(lista[j - passo].title, atual.title);
+
+                
+                if (comparaTipo > 0 || (comparaTipo == 0 && comparaTitulo > 0))
+                {
+                    lista[j] = lista[j - passo];  // Move o elemento para a posição "j"
+                    movimentacoes++; 
+                    j = j - passo; // Atualiza j para continuar comparando com os elementos anteriores
+                }
+                else
+                {
+                    break; 
+                }
+            }
+
+            // Coloca o elemento atual na posição correta
+            lista[j] = atual;
+            movimentacoes++; 
         }
     }
 
-    return indiceMenor;
+
+    clock_t fim = clock();
+    double tempoGasto = (double)(fim - inicio) / CLOCKS_PER_SEC;
+
+    FILE *arquivoLog = fopen("838966_shellsort.txt", "w");
+    if (arquivoLog)
+    {
+        fprintf(arquivoLog, "%s\t%lld\t%lld\t%lf\n", matricula, comparacoes, movimentacoes, tempoGasto);
+        fclose(arquivoLog);
+    }
+    else
+    {
+        printf("Erro ao criar o arquivo de log.\n");
+    }
 }
 
-// Função recursiva de ordenação por seleção
-void selecaoRecursiva(Show shows[], int inicio, int n, clock_t tempo_inicio, const char *matricula) {
-
-    // condição de parada pra criar o arquivo log
-    if (inicio >= n - 1) {
-        // CASO BASE: Array totalmente ordenado
-        clock_t tempo_fim = clock();
-        double tempo_execucao = ((double)(tempo_fim - tempo_inicio)) / CLOCKS_PER_SEC;
-
-        // Criação do arquivo de log
-        FILE *log = fopen("838966_selecaoRecursiva.txt", "w");
-        if (log == NULL) {
-            printf("Erro ao criar arquivo de log.\n");
-            return;
-        }
-
-        // Supondo que você tenha variáveis "comparacoes" e "movimentacoes"
-        fprintf(log, "%s\t%lld\t%lld\t%lf\n", matricula, comparacoes, movimentacoes, tempo_execucao);
-        fclose(log);
-
-        return;
-    }
-
-    // Encontrar o índice do menor show a partir do índice "inicio"
-    int indiceMenor = encontrarMenorIndex(shows, inicio, n);
-
-    // Trocar os shows
-    if (indiceMenor != inicio) {
-        swap(&shows[inicio], &shows[indiceMenor]);
-    }
-
-    // Chamada recursiva para o próximo índice
-    selecaoRecursiva(shows, inicio + 1, n, tempo_inicio, matricula);
-}
 
 /* ============================ FUNÇÃO PRINCIPAL ============================ */
 
@@ -589,8 +602,7 @@ int main()
 
     free(shows);
 
-    clock_t inicio = clock();
-    selecaoRecursiva(showsFiltrados, 0, quantidadeFiltrados, inicio, matricula);
+    shellsort(showsFiltrados, quantidadeFiltrados, matricula);
 
     for (int i = 0; i < quantidadeFiltrados; i++)
     {
