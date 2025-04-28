@@ -517,50 +517,41 @@ Show *lerEntrada(Show *shows, int total, int *quantidadeFiltrados) {
 }
 
 /* ============================ FUNÇÕES DE ORDENAÇÃO ============================ */
-void swap(Show *a, Show *b) {
-    Show temp = clonarShow(*a);
-    *a = clonarShow(*b);
-    *b = clonarShow(temp);
 
-    movimentacoes += 3; // Cada swap conta como 3 movimentações
+// Função para trocar dois elementos do vetor
+void swap(Show *a, Show *b) {
+    Show temp = *a;
+    *a = *b;
+    *b = temp;
+    movimentacoes += 3; // Cada troca envolve 3 movimentações (estrutura inteira)
 }
 
-int particionar(Show *v, int low, int high) {
-    Show pivo = clonarShow(v[high]);
-    int i = low - 1;
-
-    for (int j = low; j < high; j++) {
-        if (comparar_shows(v[j], pivo) < 0) {
-            i++;
-            swap(&v[i], &v[j]);
+// Função de ordenação usando Bubble Sort
+void bubble_sort(Show *v, int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            comparacoes++;
+            if (comparar_shows(v[j], v[j + 1]) > 0) {
+                swap(&v[j], &v[j + 1]);
+            }
         }
     }
-
-    swap(&v[i + 1], &v[high]);
-    return i + 1;
 }
 
-void quicksort(Show *v, int low, int high) {
-    if (low < high) {
-        int pi = particionar(v, low, high);
+/* ============================ FUNÇÃO DE LOG ============================ */
 
-        quicksort(v, low, pi - 1);
-        quicksort(v, pi + 1, high);
-    }
-}
-
-/* ============================ FUNÇÃO PARA GERAR O LOG ============================ */
+// Função para gerar o log da execução
 void gerar_log(const char *nome_arquivo, double tempo_execucao) {
-    FILE *file = fopen(nome_arquivo, "w");
+    FILE *arquivo = fopen(nome_arquivo, "w");
 
-    if (file == NULL) {
-        perror("Erro ao criar o arquivo de log");
+    if (arquivo == NULL) {
+        printf("Erro ao criar arquivo de log.\n");
         return;
     }
 
-    fprintf(file, "838966\t%lld\t%lld\t%.6lf\n", comparacoes, movimentacoes, tempo_execucao);
+    fprintf(arquivo, "804495\t%lld\t%lld\t%.6lf\n", comparacoes, movimentacoes, tempo_execucao);
 
-    fclose(file);
+    fclose(arquivo);
 }
 
 /* ============================ FUNÇÃO PRINCIPAL ============================ */
@@ -575,7 +566,12 @@ int main() {
 
     free(shows); 
 
-    quicksort(showsFiltrados, 0, quantidadeFiltrados-1);
+    clock_t inicio = clock();
+    bubble_sort(showsFiltrados, quantidadeFiltrados);
+    clock_t fim = clock();
+
+    double tempo_execucao = (double)(fim - inicio) / CLOCKS_PER_SEC;
+    gerar_log("804495_bubblesort.txt", tempo_execucao);
 
     for (int i = 0; i < quantidadeFiltrados; i++) {
         imprimir_show(showsFiltrados[i]);

@@ -516,51 +516,125 @@ Show *lerEntrada(Show *shows, int total, int *quantidadeFiltrados) {
     return filtrados;
 }
 
-/* ============================ FUNÇÕES DE ORDENAÇÃO ============================ */
-void swap(Show *a, Show *b) {
-    Show temp = clonarShow(*a);
-    *a = clonarShow(*b);
-    *b = clonarShow(temp);
+/* ============================ RADIX SORT ============================ */
+/*
+    O Radix Sort é um algoritmo de ordenação que NÃO compara os elementos diretamente.
+    Em vez disso, ele organiza os itens olhando para cada dígito separadamente.
 
-    movimentacoes += 3; // Cada swap conta como 3 movimentações
+    A ideia aqui é começar pelo dígito menos importante (no caso, o último número do ano de lançamento)
+    e ir indo para o mais importante (o primeiro número).
+
+    Para cada "passada" em um dígito, a gente usa um algoritmo de ordenação que é estável.
+    A escolha foi usar o Counting Sort, só que adaptado para desempatar usando o título (title)
+    se os anos forem iguais.
+
+    --- Complexidade:
+    - Melhor, médio e pior caso: O(d * (n + k))
+    
+    Onde:
+    - n = número de elementos que estamos ordenando
+    - k = intervalo dos valores possíveis (aqui é o intervalo dos anos de lançamento)
+    - d = número de dígitos (para anos, são sempre 4 dígitos, tipo 2024)
+
+    Como tanto o número de dígitos (d) quanto o intervalo (k) são pequenos e fixos,
+    na prática o Radix Sort se comporta quase como O(n), bem rápido!
+
+    --- Observação:
+    Como Radix Sort é estável, o desempate por título funciona certinho:
+    se dois shows tiverem o mesmo releaseYear, eles ficam ordenados pelo title.
+*/
+
+void swap(Show *a, Show *b) {
+    Show temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
-int particionar(Show *v, int low, int high) {
-    Show pivo = clonarShow(v[high]);
-    int i = low - 1;
-
-    for (int j = low; j < high; j++) {
-        if (comparar_shows(v[j], pivo) < 0) {
-            i++;
-            swap(&v[i], &v[j]);
+/* Função auxiliar para encontrar o maior releaseYear */
+int encontrar_maior_releaseYear(Show *v, int n) {
+    int maior = v[0].releaseYear;
+    for (int i = 1; i < n; i++) {
+        comparacoes++;
+        if (v[i].releaseYear > maior) {
+            maior = v[i].releaseYear;
         }
     }
-
-    swap(&v[i + 1], &v[high]);
-    return i + 1;
+    return maior;
 }
 
-void quicksort(Show *v, int low, int high) {
-    if (low < high) {
-        int pi = particionar(v, low, high);
+/* Counting Sort adaptado para Radix Sort (estável e com desempate por title) */
+void counting_sort(Show *v, int n, int exp) {
+    Show *output = (Show *)malloc(n * sizeof(Show));
+    int count[10] = {0}; // Para os dígitos 0-9
 
-        quicksort(v, low, pi - 1);
-        quicksort(v, pi + 1, high);
+    // Conta a ocorrência dos dígitos considerando o dígito atual (exp)
+    for (int i = 0; i < n; i++) {
+        int digito = (v[i].releaseYear / exp) % 10;
+        count[digito]++;
+    }
+
+    // Ajusta count[i] para que cada posição contenha a posição correta no output
+    for (int i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Constrói o vetor de saída de trás para frente (para estabilidade)
+    for (int i = n - 1; i >= 0; i--) {
+        int digito = (v[i].releaseYear / exp) % 10;
+        output[count[digito] - 1] = clonarShow(v[i]);
+        count[digito]--;
+        movimentacoes++;
+    }
+
+    // Copia o vetor ordenado de volta para v
+    for (int i = 0; i < n; i++) {
+        v[i] = clonarShow(output[i]);
+        movimentacoes++;
+    }
+
+    free(output);
+}
+
+/* Função principal de Radix Sort para releaseYear (com desempate por title) */
+void radix_sort(Show *v, int n) {
+    // Encontra o maior releaseYear para saber quantos dígitos existem
+    int maior = encontrar_maior_releaseYear(v, n);
+
+    // Aplica Counting Sort para cada dígito, começando pelo menos significativo
+    for (int exp = 1; maior / exp > 0; exp *= 10) {
+        counting_sort(v, n, exp);
+    }
+
+    /* 
+        Após o Radix Sort pelos dígitos de releaseYear,
+        fazemos uma ordenação final por título apenas entre elementos
+        que possuem o mesmo releaseYear.
+    */
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n && v[i].releaseYear == v[j].releaseYear; j++) {
+            comparacoes++;
+            if (comparar_titles(v[i].title, v[j].title) > 0) {
+                swap(&v[i], &v[j]);
+                movimentacoes += 3;
+            }
+        }
     }
 }
 
-/* ============================ FUNÇÃO PARA GERAR O LOG ============================ */
-void gerar_log(const char *nome_arquivo, double tempo_execucao) {
-    FILE *file = fopen(nome_arquivo, "w");
+/* ============================ FUNÇÃO DE LOG ============================ */
 
-    if (file == NULL) {
-        perror("Erro ao criar o arquivo de log");
+// Função para gerar o log da execução
+void gerar_log(const char *nome_arquivo, double tempo_execucao) {
+    FILE *arquivo = fopen(nome_arquivo, "w");
+
+    if (arquivo == NULL) {
+        printf("Erro ao criar arquivo de log.\n");
         return;
     }
 
-    fprintf(file, "838966\t%lld\t%lld\t%.6lf\n", comparacoes, movimentacoes, tempo_execucao);
+    fprintf(arquivo, "838966\t%lld\t%lld\t%.6lf\n", comparacoes, movimentacoes, tempo_execucao);
 
-    fclose(file);
+    fclose(arquivo);
 }
 
 /* ============================ FUNÇÃO PRINCIPAL ============================ */
@@ -575,7 +649,12 @@ int main() {
 
     free(shows); 
 
-    quicksort(showsFiltrados, 0, quantidadeFiltrados-1);
+    clock_t inicio = clock();
+    radix_sort(showsFiltrados, quantidadeFiltrados);
+    clock_t fim = clock();
+
+    double tempo_execucao = (double)(fim - inicio) / CLOCKS_PER_SEC;
+    gerar_log("838966_radixsort.txt", tempo_execucao);
 
     for (int i = 0; i < quantidadeFiltrados; i++) {
         imprimir_show(showsFiltrados[i]);

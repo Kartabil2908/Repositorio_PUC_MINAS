@@ -478,6 +478,7 @@ void buscaBinariaTitulo(Show *shows, int numShows, char *tituloBusca)
         int esq = 0;
         int dir = numShows - 1;
         int numComparacoes = 0;
+        int encontrado = 0;
 
         while (esq <= dir)
         {
@@ -487,7 +488,7 @@ void buscaBinariaTitulo(Show *shows, int numShows, char *tituloBusca)
 
             if (cmp == 0)
             {
-                
+                encontrado = 1;
                 break;
             }
             else if (cmp < 0)
@@ -499,14 +500,13 @@ void buscaBinariaTitulo(Show *shows, int numShows, char *tituloBusca)
                 dir = meio - 1;
             }
         
-
-       
-
-        
-        
-
         totalComparacoes += numComparacoes;
     }
+
+    if(encontrado == 1)
+    {
+        printf("SIM\n");
+    }else{printf("NAO\n");}
    
 
     clock_t fim = clock(); // termina de medir o tempo de execução da função
@@ -538,7 +538,7 @@ int main()
     setlocale(LC_ALL, "en_US.UTF-8");
 
     Show *shows = NULL;
-    int total = carregar_shows("../tmp/disneyplus.csv", &shows);
+    int total = carregar_shows("/tmp/disneyplus.csv", &shows);
 
     int quantidadeFiltrados = 0;
     char tituloBusca[MAX_STR];

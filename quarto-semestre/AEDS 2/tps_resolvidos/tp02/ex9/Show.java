@@ -107,8 +107,7 @@ public class Show {
       this.listedIn = listedIn;
    }
 
-   // ================================================== FUNÇÃO IMPRIMIR
-   // ================================================== //
+   // ================================================== FUNÇÃO IMPRIMIR ================================================== //
 
    // Método responsável por imprimir todos os dados de um objeto Show formatados
 
@@ -188,8 +187,7 @@ public class Show {
       System.out.println();
    }
 
-   // ================================================== FUNÇÃO LER ENTRADA
-   // ================================================== //
+   // ================================================== FUNÇÃO LER ENTRADA ================================================== //
 
    // método para ler e retornar os shows com base no id, fica mais fácil de
    // manipular em outras funções;
@@ -232,8 +230,7 @@ public class Show {
       return showFiltrado;
    }
 
-   // ================================================== FUNÇÃO LER O CSV
-   // ================================================== //
+   // ================================================== FUNÇÃO LER O CSV ================================================== //
 
    // Lê o arquivo CSV e cria objetos Show para cada linha
    public static Show[] readShowsFromCSV(String caminhoCSV) {
@@ -357,98 +354,141 @@ public class Show {
 
    // ================================================== FUNÇÃO DE ORDENAÇÃO ==================================================
 
-   static int comparacoes = 0;
-   static int movimentacoes = 0;
-
-   public static void ordenarHeapsort(Show[] vetor) {
-      comparacoes = 0;
-      movimentacoes = 0;
-      long inicio = System.currentTimeMillis();
-  
-      for (int i = vetor.length / 2 - 1; i >= 0; i--) {
-          heapify(vetor, vetor.length, i);
+   public static void ordenarHeapSortDirector(Show[] vetor) {
+      int n = vetor.length;
+      int comparacoes = 0;
+      int movimentacoes = 0;
+      long inicio = System.currentTimeMillis(); // Marca o início do tempo
+      
+      // Construir o heap (reorganizar o array)
+      for (int i = n / 2 - 1; i >= 0; i--) {
+          comparacoes += construirHeap(vetor, n, i, true, 0);
+          movimentacoes += construirHeap(vetor, n, i, false, 0);
       }
-  
-      for (int i = vetor.length - 1; i > 0; i--) {
+      
+      // Extrair elementos do heap um por um
+      for (int i = n - 1; i > 0; i--) {
+          // Move a raiz atual para o final
           Show temp = vetor[0];
           vetor[0] = vetor[i];
           vetor[i] = temp;
-          movimentacoes++;
-  
-          heapify(vetor, i, 0);
+          movimentacoes += 3; // Troca de 3 elementos (temp, vetor[0], vetor[i])
+          
+          // Chama construirHeap na heap reduzida
+          comparacoes += construirHeap(vetor, i, 0, true, 0);
+          movimentacoes += construirHeap(vetor, i, 0, false, 0);
       }
-  
-      long fim = System.currentTimeMillis();
+      
+      long fim = System.currentTimeMillis(); // Marca o fim do tempo
       long tempoExecucao = fim - inicio;
-  
-      try (BufferedWriter writer = new BufferedWriter(new FileWriter("838966_heapsort.txt"))) {
-          writer.write("838966\t" + comparacoes + "\t" + movimentacoes + "\t" + tempoExecucao);
+      
+      // Criação do arquivo de log
+      String matricula = "838966"; 
+      try {
+          BufferedWriter writer = new BufferedWriter(new FileWriter("838966_heapsort.txt"));
+          writer.write(matricula + "\t" + comparacoes + "\t" + movimentacoes + "\t" + tempoExecucao);
+          writer.newLine();
+          writer.close();
       } catch (IOException e) {
           e.printStackTrace();
       }
   }
-   // Função auxiliar para construir o heap máximo
-   public static void heapify(Show[] vetor, int n, int i) {
-      int largest = i;
-      int left = 2 * i + 1;
-      int right = 2 * i + 2;
-
-      // Verifica se o filho esquerdo é maior que a raiz
-      if (left < n && compararShows(vetor[left], vetor[largest]) > 0) {
-         largest = left;
-      }
-
-      // Verifica se o filho direito é maior que a raiz
-      if (right < n && compararShows(vetor[right], vetor[largest]) > 0) {
-         largest = right;
-      }
-
-      // Se o maior não for a raiz, troca e continua a organizar o heap
-      if (largest != i) {
-         Show swap = vetor[i];
-         vetor[i] = vetor[largest];
-         vetor[largest] = swap;
-         movimentacoes++;
-         
-         heapify(vetor, n, largest);
-      }
-   }
-
-   public static int compararShows(Show a, Show b) {
-      // Verifica se 'a' tem um diretor válido e 'b' não tem
-      if (a.getDirector() == null || a.getDirector().isEmpty() || a.getDirector().contains("NaN")) {
-          return (b.getDirector() == null || b.getDirector().isEmpty() || b.getDirector().contains("NaN")) ? 0 : 1;  // Se 'b' tem diretor válido, 'b' vem antes
+  
+  // Função para construirHeap uma subárvore com raiz no nó i
+  private static int construirHeap(Show[] vetor, int n, int i, boolean contarComparacoes, int count) {
+      int maior = i; // Inicializa o maior como raiz
+      int esquerda = 2 * i + 1; // esquerda = 2*i + 1
+      int direita = 2 * i + 2; // direita = 2*i + 2
+      
+      // Compara com o filho da esquerda
+      if (esquerda < n) {
+          if (contarComparacoes) {
+              count++;
+          }
+          
+          int comparacao = comparaDirectorTitle(vetor[esquerda], vetor[maior]);
+          
+          if (comparacao > 0) {
+              maior = esquerda;
+              if (!contarComparacoes) {
+                  count++;
+              }
+          }
       }
       
-      // Verifica se 'b' tem um diretor válido e 'a' não tem
-      if (b.getDirector() == null || b.getDirector().isEmpty() || b.getDirector().contains("NaN")) {
-          return -1;  // 'a' vem antes
+      // Compara com o filho da direita
+      if (direita < n) {
+          if (contarComparacoes) {
+              count++;
+          }
+          
+          int comparacao = comparaDirectorTitle(vetor[direita], vetor[maior]);
+          
+          if (comparacao > 0) {
+              maior = direita;
+              if (!contarComparacoes) {
+                  count++;
+              }
+          }
       }
-  
-      // Se ambos têm diretores válidos, compara os diretores
-      int diretorComparacao = String.join(",", a.getDirector()).compareToIgnoreCase(String.join(",", b.getDirector()));
       
-      // Se os diretores são iguais, compara os títulos (desempate)
-      if (diretorComparacao == 0) {
-          return a.getTitle().compareToIgnoreCase(b.getTitle());
+      // Se o maior não é a raiz
+      if (maior != i) {
+          // Troca
+          Show temp = vetor[i];
+          vetor[i] = vetor[maior];
+          vetor[maior] = temp;
+          
+          if (!contarComparacoes) {
+              count += 3; // Conta 3 movimentações para a troca
+          }
+          
+          // Recursivamente construirHeap a subárvore afetada
+          count = construirHeap(vetor, n, maior, contarComparacoes, count);
       }
+      
+      return count;
+  }
   
-      // Caso contrário, compara apenas os diretores
-      return diretorComparacao;
+  // Função auxiliar para comparar director e title
+  private static int comparaDirectorTitle(Show a, Show b) {
+      // Obtém o nome do diretor para cada show (ou "NaN" se não tiver diretor)
+      String dirA = getDirectorString(a);
+      String dirB = getDirectorString(b);
+      
+      // Comparação alfabética dos diretores
+      int cmpDir = dirA.compareToIgnoreCase(dirB);
+      
+      // Se os diretores são diferentes, retorna a comparação
+      if (cmpDir != 0) {
+          return cmpDir;
+      }
+      
+      // Se os diretores são iguais, compara por título
+      return a.getTitle().compareToIgnoreCase(b.getTitle());
+  }
+  
+  // Função auxiliar para obter o nome do diretor para comparação
+  private static String getDirectorString(Show show) {
+      if (show.getDirector() == null || show.getDirector().isEmpty()) {
+          return "NaN"; // Retorna "NaN" como string para comparação
+      }
+      
+      // Retorna o primeiro diretor da lista para comparação
+      return show.getDirector().get(0);
   }
 
-   // ================================================== FUNÇÃO MAIN
-   // ==================================================
+   // ================================================== FUNÇÃO MAIN ==================================================
    public static void main(String[] args) {
 
       Scanner scanner = new Scanner(System.in);
       System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
 
-      Show[] shows = Show.readShowsFromCSV("../tmp/disneyplus.csv");
+      Show[] shows = Show.readShowsFromCSV("/tmp/disneyplus.csv");
 
       Show[] showFiltrado = lerEntrada(shows, scanner);
 
-      Show.ordenarHeapsort(showFiltrado);
+      Show.ordenarHeapSortDirector(showFiltrado);
 
       for (int i = 0; i < showFiltrado.length; i++) {
 

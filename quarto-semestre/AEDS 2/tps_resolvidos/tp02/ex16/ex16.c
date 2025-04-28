@@ -516,51 +516,53 @@ Show *lerEntrada(Show *shows, int total, int *quantidadeFiltrados) {
     return filtrados;
 }
 
-/* ============================ FUNÇÕES DE ORDENAÇÃO ============================ */
-void swap(Show *a, Show *b) {
-    Show temp = clonarShow(*a);
-    *a = clonarShow(*b);
-    *b = clonarShow(temp);
+/* ============================ RADIX SORT ============================ */
+void insertion_sort_parcial(Show *shows, int n, int k) {
+    clock_t start_time = clock(); 
 
-    movimentacoes += 3; // Cada swap conta como 3 movimentações
-}
+    for (int i = 1; i < k && i < n; i++) {
+        Show temp = clonarShow(shows[i]);
+        int j = i - 1;
 
-int particionar(Show *v, int low, int high) {
-    Show pivo = clonarShow(v[high]);
-    int i = low - 1;
-
-    for (int j = low; j < high; j++) {
-        if (comparar_shows(v[j], pivo) < 0) {
-            i++;
-            swap(&v[i], &v[j]);
+        while (j >= 0) {
+            comparacoes++;
+            int cmp = compareIgnoreCase(shows[j].type, temp.type);
+        
+            // Se o 'type' for maior, ou se for igual e o 'title' for maior, fazemos a troca
+            if (cmp > 0 || (cmp == 0 && comparar_titles(shows[j].title, temp.title) > 0)) {
+                movimentacoes++;
+                shows[j + 1] = clonarShow(shows[j]);
+                j--;
+            } else {
+                break;
+            }
         }
+
+        movimentacoes++;
+        shows[j + 1] = clonarShow(temp);
     }
 
-    swap(&v[i + 1], &v[high]);
-    return i + 1;
+    clock_t end_time = clock(); 
+    double time_spent = (double)(end_time - start_time) / CLOCKS_PER_SEC; 
+
+    
+    gerar_log("matricula_insercao_partial.txt", time_spent);
 }
 
-void quicksort(Show *v, int low, int high) {
-    if (low < high) {
-        int pi = particionar(v, low, high);
+/* ============================ FUNÇÃO DE LOG ============================ */
 
-        quicksort(v, low, pi - 1);
-        quicksort(v, pi + 1, high);
-    }
-}
-
-/* ============================ FUNÇÃO PARA GERAR O LOG ============================ */
+// Função para gerar o log da execução
 void gerar_log(const char *nome_arquivo, double tempo_execucao) {
-    FILE *file = fopen(nome_arquivo, "w");
+    FILE *arquivo = fopen(nome_arquivo, "w");
 
-    if (file == NULL) {
-        perror("Erro ao criar o arquivo de log");
+    if (arquivo == NULL) {
+        printf("Erro ao criar arquivo de log.\n");
         return;
     }
 
-    fprintf(file, "838966\t%lld\t%lld\t%.6lf\n", comparacoes, movimentacoes, tempo_execucao);
+    fprintf(arquivo, "838966\t%lld\t%lld\t%.6lf\n", comparacoes, movimentacoes, tempo_execucao);
 
-    fclose(file);
+    fclose(arquivo);
 }
 
 /* ============================ FUNÇÃO PRINCIPAL ============================ */
@@ -568,16 +570,18 @@ int main() {
     setlocale(LC_ALL, "en_US.UTF-8");
 
     Show *shows = NULL;
-    int total = carregar_shows("/tmp/disneyplus.csv", &shows);
+    int total = carregar_shows("../tmp/disneyplus.csv", &shows);
 
     int quantidadeFiltrados = 0;
     Show *showsFiltrados = lerEntrada(shows, total, &quantidadeFiltrados);
 
     free(shows); 
 
-    quicksort(showsFiltrados, 0, quantidadeFiltrados-1);
+    
+    insertion_sort_parcial(showsFiltrados, quantidadeFiltrados, 10);
+    
 
-    for (int i = 0; i < quantidadeFiltrados; i++) {
+    for (int i = 0; i < 10; i++) {
         imprimir_show(showsFiltrados[i]);
     }
 
