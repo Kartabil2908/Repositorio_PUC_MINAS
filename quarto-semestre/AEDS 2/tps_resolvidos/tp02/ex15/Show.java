@@ -110,6 +110,9 @@ public class Show {
       this.listedIn = listedIn;
    }
 
+
+   // ================================================== FUNÇÃO IMPRIMIR ================================================== //
+
    // Método responsável por imprimir todos os dados de um objeto Show formatados
 
    public void imprimir() {
@@ -188,6 +191,8 @@ public class Show {
       System.out.println();
    }
 
+   // ================================================== FUNÇÃO LER ENTRADA ================================================== //
+
    // método para ler e retornar os shows com base no id, fica mais fácil de
    // manipular em outras funções;
    public static Show[] lerEntrada(Show[] showCSV, Scanner scanner) {
@@ -228,6 +233,9 @@ public class Show {
 
       return showFiltrado;
    }
+
+
+   // ================================================== FUNÇÃO LER O CSV ================================================== //
 
    // Lê o arquivo CSV e cria objetos Show para cada linha
    public static Show[] readShowsFromCSV(String caminhoCSV) {
@@ -349,56 +357,47 @@ public class Show {
 
    }
 
-   public static void pesquisaSequencialTitulo(Show[] vetor, Scanner scanner) {
-      ArrayList<String> pesquisas = new ArrayList<>();
-      String entrada;
-   
-      // Queima a linha "FIM" que foi deixada pelo método lerEntrada
-      if (scanner.hasNextLine()) {
-         scanner.nextLine();
-      }
-      
-   
-      // Lê os títulos até encontrar "FIM"
-      while (scanner.hasNextLine() && !(entrada = scanner.nextLine()).equals("FIM")) {
-         pesquisas.add(entrada.trim());
-      }
-   
-      int comparacoes = 0;
-      long inicio = System.nanoTime(); // Tempo inicial
-      System.out.println("NAO");
-      System.out.println("NAO");
-      for (String tituloBuscado : pesquisas) {
-         boolean encontrado = false;
-   
-         for (Show show : vetor) {
-            comparacoes++;
-            if (show != null && show.getTitle().equals(tituloBuscado)) {
-               encontrado = true;
-               break;
-            }
-         }
-         
-         if (encontrado) {
-            System.out.println("SIM");
-         } else {
-            System.out.println("NAO");
-         }
-      }
-   
-      long fim = System.nanoTime();
-      long tempoExecucao = (fim - inicio);
-   
-      try {
-         FileWriter fw = new FileWriter("838966_sequencial.txt");
-         fw.write("838966" + "\t" + tempoExecucao + "\t" + comparacoes);
-         fw.close();
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
+   // ================================================== SELEÇÃO PARCIAL POR TITLE ==================================================
+
+public static void selecaoParcialTitle(Show[] shows, int k) {
+   long inicio = System.nanoTime(); // Tempo inicial
+   int comparacoes = 0;
+   int movimentacoes = 0;
+
+   for (int i = 0; i < k; i++) { // Limita o loop externo a k
+       int indiceMenor = i;
+
+       for (int j = i + 1; j < shows.length; j++) {
+           comparacoes++;
+           if (shows[j].getTitle().compareToIgnoreCase(shows[indiceMenor].getTitle()) < 0) {
+               indiceMenor = j;
+           }
+       }
+
+       if (indiceMenor != i) {
+           Show temp = shows[i];
+           shows[i] = shows[indiceMenor];
+           shows[indiceMenor] = temp;
+           movimentacoes += 3; // Considera 3 movimentações para a troca
+       }
    }
 
-   // MAIN
+   long fim = System.nanoTime(); // Tempo final
+   long tempoExecucao = (fim - inicio);
+
+   // Impressão do log
+   try {
+      FileWriter fw = new FileWriter("838966_selecao.txt");
+      fw.write("838966" + "\t" + comparacoes + "\t" + movimentacoes + "\t" + tempoExecucao);
+      fw.close();
+  } catch (IOException e) {
+      e.printStackTrace();
+  }
+}
+
+  
+
+   // ================================================== FUNÇÃO MAIN ==================================================
    public static void main(String[] args) {
 
       Scanner scanner = new Scanner(System.in);
@@ -406,10 +405,17 @@ public class Show {
 
       Show[] shows = Show.readShowsFromCSV("/tmp/disneyplus.csv");
 
-      Show[] showFiltrado = lerEntrada(shows, scanner);
+      Show[] showFiltrados = lerEntrada(shows, scanner);
 
+      selecaoParcialTitle(showFiltrados, 10);
+
+      for(int i = 0; i < 10; i++)
+      {
+         showFiltrados[i].imprimir();
+      }
+
+     
       
-      Show.pesquisaSequencialTitulo(showFiltrado, scanner);
    }
 
    

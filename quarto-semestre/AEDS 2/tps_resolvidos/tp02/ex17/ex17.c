@@ -1,29 +1,26 @@
-/* ============================ BIBLIOTECAS E DEFINIÇÕES ============================ */
-
+/* ============================ BIBLIOTECAS ============================ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
 #include <locale.h>
+#include <ctype.h>
 
-/* Tamanhos máximos para strings e listas */
+/* ============================ DEFINIÇÕES ============================ */
 #define MAX_LINE 10000 // Tamanho máximo de uma linha do CSV
 #define MAX_STR 300    // Tamanho máximo de uma string individual
 #define MAX_ELEM 30    // Máximo de elementos em uma lista (diretores, atores e categorias)
 
 /* ============================ ESTRUTURAS DE DADOS ============================ */
-
 // Lista de strings (usada para diretores, elenco e categorias)
-typedef struct
-{
+typedef struct {
     char elementos[MAX_ELEM][MAX_STR]; // Vetor de strings
     int tamanho;                       // Número atual de elementos válidos na lista
 } Lista;
 
 // Estrutura que representa um show
-typedef struct
-{
+typedef struct {
     char showId[MAX_STR];    // ID
     char type[MAX_STR];      // Tipo
     char title[MAX_STR];     // Título
@@ -37,26 +34,48 @@ typedef struct
     Lista listedIn;          // Lista de gêneros/categorias
 } Show;
 
-/* ============================ FUNÇÕES AUXILIARES ============================ */
+/* ============================ VARIÁVEIS GLOBAIS ============================ */
+long long comparacoes = 0;
+long long movimentacoes = 0;
 
-// Substitui strings nulas ou vazias por "NaN"
-void check_nan(char *str)
-{
-    if (str == NULL || strlen(str) == 0)
-    {
-        strcpy(str, "NaN");
-    }
-}
+/* ============================ PROTÓTIPOS DAS FUNÇÕES ============================ */
 
+
+
+// Funções para manipulação de listas
+void ordenar_lista(Lista *lista);
+Lista separar_lista(char *campo);
+
+
+
+// Funções de impressão
+void imprimir_lista(Lista lista);
+void imprimir_diretores(Lista lista);
+void imprimir_show(Show show);
+
+// Funções para parseamento de CSV
+void parse_csv_line(char *line, Show *show);
+int carregar_shows(const char *caminho, Show **shows);
+Show clonarShow(Show original);
+
+// Funções para leitura de entrada e processamento
+Show *lerEntrada(Show *shows, int total, int *quantidadeFiltrados);
+    
+
+
+
+
+/* ============================ FUNÇÕES AUXILIARES PARA STRINGS ============================ */
+
+
+
+
+/* ============================ FUNÇÕES PARA MANIPULAÇÃO DE LISTAS ============================ */
 // Ordena alfabeticamente os elementos de uma lista
-void ordenar_lista(Lista *lista)
-{
-    for (int i = 0; i < lista->tamanho - 1; i++)
-    {
-        for (int j = i + 1; j < lista->tamanho; j++)
-        {
-            if (strcmp(lista->elementos[i], lista->elementos[j]) > 0)
-            {
+void ordenar_lista(Lista *lista) {
+    for (int i = 0; i < lista->tamanho - 1; i++) {
+        for (int j = i + 1; j < lista->tamanho; j++) {
+            if (strcmp(lista->elementos[i], lista->elementos[j]) > 0) {
                 char temp[MAX_STR];
                 strcpy(temp, lista->elementos[i]);
                 strcpy(lista->elementos[i], lista->elementos[j]);
@@ -67,16 +86,13 @@ void ordenar_lista(Lista *lista)
 }
 
 // Converte uma string separada por vírgulas em uma lista
-Lista separar_lista(char *campo)
-{
+Lista separar_lista(char *campo) {
     Lista lista;
     lista.tamanho = 0;
 
     char *token = strtok(campo, ",");
-    while (token != NULL && lista.tamanho < MAX_ELEM)
-    {
-        while (*token == ' ')
-        {
+    while (token != NULL && lista.tamanho < MAX_ELEM) {
+        while (*token == ' ') {
             token++; // Remove espaços iniciais
         }
 
@@ -88,20 +104,42 @@ Lista separar_lista(char *campo)
         token = strtok(NULL, ",");
     }
 
-    return lista; // Importante: a ordenação será feita fora, apenas onde for necessário
+    return lista; // A ordenação será feita fora, apenas onde for necessário
+}
+
+
+
+// Compara dois shows pelo dateAdded, depois pelo title em caso de empate
+int compararShows(const Show* a, const Show* b) {
+    int resultado;
+    
+    // Comparação por diretor
+    if (a->director.tamanho == 0 && b->director.tamanho == 0) {
+        resultado = 0; // Ambos sem diretor
+    } else if (a->director.tamanho == 0) {
+        return 1; // a sem diretor (vem depois)
+    } else if (b->director.tamanho == 0) {
+        return -1; // b sem diretor (vem depois)
+    } else {
+        // Compara pelo primeiro nome da lista de diretores
+        resultado = strcmp(a->director.elementos[0], b->director.elementos[0]);
+    }
+
+    if (resultado != 0) {
+        return resultado;
+    } else {
+        // Desempate pelo título
+        return strcmp(a->title, b->title);
+    }
 }
 
 /* ============================ FUNÇÕES DE IMPRESSÃO ============================ */
-
 // Imprime uma lista de forma formatada com colchetes (ex: [A, B, C])
-void imprimir_lista(Lista lista)
-{
+void imprimir_lista(Lista lista) {
     printf("[");
-    for (int i = 0; i < lista.tamanho; i++)
-    {
+    for (int i = 0; i < lista.tamanho; i++) {
         printf("%s", lista.elementos[i]);
-        if (i < lista.tamanho - 1)
-        {
+        if (i < lista.tamanho - 1) {
             printf(", ");
         }
     }
@@ -109,19 +147,13 @@ void imprimir_lista(Lista lista)
 }
 
 // Imprime a lista de diretores (sem colchetes e sem ordenação)
-void imprimir_diretores(Lista lista)
-{
-    if (lista.tamanho == 0)
-    {
+void imprimir_diretores(Lista lista) {
+    if (lista.tamanho == 0) {
         printf("NaN");
-    }
-    else
-    {
-        for (int i = 0; i < lista.tamanho; i++)
-        {
+    } else {
+        for (int i = 0; i < lista.tamanho; i++) {
             printf("%s", lista.elementos[i]);
-            if (i < lista.tamanho - 1)
-            {
+            if (i < lista.tamanho - 1) {
                 printf(", ");
             }
         }
@@ -129,103 +161,72 @@ void imprimir_diretores(Lista lista)
 }
 
 // Imprime todos os campos de um Show no formato do enunciado
-void imprimir_show(Show show)
-{
+void imprimir_show(Show show) {
     printf("=> ");
 
-    if (strlen(show.showId) > 0)
-    {
+    if (strlen(show.showId) > 0) {
         printf("%s ## ", show.showId);
-    }
-    else
-    {
+    } else {
         printf("NaN ## ");
     }
 
-    if (strlen(show.title) > 0)
-    {
+    if (strlen(show.title) > 0) {
         printf("%s ## ", show.title);
-    }
-    else
-    {
+    } else {
         printf("NaN ## ");
     }
 
-    if (strlen(show.type) > 0)
-    {
+    if (strlen(show.type) > 0) {
         printf("%s ## ", show.type);
-    }
-    else
-    {
+    } else {
         printf("NaN ## ");
     }
 
     imprimir_diretores(show.director); // Diretores não ordenados
     printf(" ## ");
 
-    if (show.cast.tamanho > 0)
-    {
+    if (show.cast.tamanho > 0) {
         ordenar_lista(&show.cast); // Elenco ordenado
         imprimir_lista(show.cast);
-    }
-    else
-    {
+    } else {
         printf("[NaN]");
     }
     printf(" ## ");
 
-    if (strlen(show.country) > 0)
-    {
+    if (strlen(show.country) > 0) {
         printf("%s ## ", show.country);
-    }
-    else
-    {
+    } else {
         printf("NaN ## ");
     }
 
-    if (strlen(show.dateAdded) > 0)
-    {
+    if (strlen(show.dateAdded) > 0) {
         printf("%s ## ", show.dateAdded);
-    }
-    else
-    {
+    } else {
         printf("NaN ## ");
     }
 
-    if (show.releaseYear > 0)
-    {
+    if (show.releaseYear > 0) {
         printf("%d ## ", show.releaseYear);
-    }
-    else
-    {
+    } else {
         printf("0 ## ");
     }
 
-    if (strlen(show.rating) > 0)
-    {
+    if (strlen(show.rating) > 0) {
         printf("%s ## ", show.rating);
-    }
-    else
-    {
+    } else {
         printf("NaN ## ");
     }
 
-    if (strlen(show.duration) > 0)
-    {
+    if (strlen(show.duration) > 0) {
         printf("%s ## ", show.duration);
-    }
-    else
-    {
+    } else {
         printf("NaN ## ");
     }
 
-    if (show.listedIn.tamanho > 0)
-    {
+    if (show.listedIn.tamanho > 0) {
         ordenar_lista(&show.listedIn); // Categorias ordenadas
         imprimir_lista(show.listedIn);
-    }
-    else
-    {
+    } else {
         printf("NaN");
     }
 
@@ -233,10 +234,8 @@ void imprimir_show(Show show)
 }
 
 /* ============================ PARSEAMENTO DE CSV ============================ */
-
 // Converte uma linha do CSV em uma struct Show
-void parse_csv_line(char *line, Show *show)
-{
+void parse_csv_line(char *line, Show *show) {
     char campos[12][MAX_STR] = {""}; // Armazena os campos extraídos
     int campo_idx = 0;               // Índice do campo atual
     int i = 0;                       // Índice para percorrer a linha
@@ -245,20 +244,14 @@ void parse_csv_line(char *line, Show *show)
     char buffer[MAX_STR]; // Buffer para construir cada campo
     int buf_idx = 0;      // Índice do buffer
 
-    while ((c = line[i++]) != '\0' && campo_idx < 12)
-    {
-        if (c == '"')
-        {
+    while ((c = line[i++]) != '\0' && campo_idx < 12) {
+        if (c == '"') {
             in_aspas = !in_aspas;
-        }
-        else if (c == ',' && !in_aspas)
-        {
+        } else if (c == ',' && !in_aspas) {
             buffer[buf_idx] = '\0';
             strcpy(campos[campo_idx++], buffer);
             buf_idx = 0;
-        }
-        else
-        {
+        } else {
             buffer[buf_idx++] = c;
         }
     }
@@ -270,57 +263,42 @@ void parse_csv_line(char *line, Show *show)
     strcpy(show->type, campos[1]);
     strcpy(show->title, campos[2]);
 
-    if (strlen(campos[3]) > 0)
-    {
-        show->director = separar_lista(campos[3]); // NÃO ordenar diretores aqui, porque no exercício 2 eles não estão ordenados
-    }
-    else
-    {
+    if (strlen(campos[3]) > 0) {
+        show->director = separar_lista(campos[3]); // NÃO ordenar diretores aqui
+    } else {
         show->director.tamanho = 0;
     }
 
-    if (strlen(campos[4]) > 0)
-    {
+    if (strlen(campos[4]) > 0) {
         show->cast = separar_lista(campos[4]);
-    }
-    else
-    {
+    } else {
         show->cast.tamanho = 0;
     }
 
     strcpy(show->country, campos[5]);
     strcpy(show->dateAdded, campos[6]);
 
-    if (strlen(campos[7]) > 0)
-    {
+    if (strlen(campos[7]) > 0) {
         show->releaseYear = atoi(campos[7]);
-    }
-    else
-    {
+    } else {
         show->releaseYear = 0;
     }
 
     strcpy(show->rating, campos[8]);
     strcpy(show->duration, campos[9]);
 
-    if (strlen(campos[10]) > 0)
-    {
+    if (strlen(campos[10]) > 0) {
         show->listedIn = separar_lista(campos[10]);
-    }
-    else
-    {
+    } else {
         show->listedIn.tamanho = 0;
     }
 }
 
 /* ============================ LEITURA DO CSV ============================ */
-
 // Lê o arquivo CSV e armazena os registros em um vetor dinâmico de Shows
-int carregar_shows(const char *caminho, Show **shows)
-{
+int carregar_shows(const char *caminho, Show **shows) {
     FILE *file = fopen(caminho, "r"); // Abre o arquivo para leitura
-    if (!file)
-    {
+    if (!file) {
         perror("Erro ao abrir o arquivo CSV");
         exit(1);
     }
@@ -332,20 +310,16 @@ int carregar_shows(const char *caminho, Show **shows)
     int count = 0;        // Quantidade de registros lidos
 
     *shows = (Show *)malloc(capacidade * sizeof(Show));
-    if (*shows == NULL)
-    {
+    if (*shows == NULL) {
         perror("Erro ao alocar memória inicial");
         exit(1);
     }
 
-    while (fgets(line, MAX_LINE, file))
-    {
-        if (count >= capacidade)
-        {
+    while (fgets(line, MAX_LINE, file)) {
+        if (count >= capacidade) {
             capacidade *= 2;
             *shows = (Show *)realloc(*shows, capacidade * sizeof(Show));
-            if (*shows == NULL)
-            {
+            if (*shows == NULL) {
                 perror("Erro ao realocar memória");
                 exit(1);
             }
@@ -360,8 +334,8 @@ int carregar_shows(const char *caminho, Show **shows)
     return count;
 }
 
-Show clonarShow(Show original)
-{
+// Clona um objeto Show
+Show clonarShow(Show original) {
     Show copia;
 
     // Copiar strings simples
@@ -376,52 +350,42 @@ Show clonarShow(Show original)
 
     // Copiar listas (director, cast, listedIn)
     copia.director.tamanho = original.director.tamanho;
-    for (int i = 0; i < original.director.tamanho; i++)
-    {
+    for (int i = 0; i < original.director.tamanho; i++) {
         strcpy(copia.director.elementos[i], original.director.elementos[i]);
     }
 
     copia.cast.tamanho = original.cast.tamanho;
-    for (int i = 0; i < original.cast.tamanho; i++)
-    {
+    for (int i = 0; i < original.cast.tamanho; i++) {
         strcpy(copia.cast.elementos[i], original.cast.elementos[i]);
     }
 
     copia.listedIn.tamanho = original.listedIn.tamanho;
-    for (int i = 0; i < original.listedIn.tamanho; i++)
-    {
+    for (int i = 0; i < original.listedIn.tamanho; i++) {
         strcpy(copia.listedIn.elementos[i], original.listedIn.elementos[i]);
     }
 
     return copia;
 }
 
-/* ============================ BUSCA POR ID ============================ */
-
+/* ============================ LEITURA DE ENTRADA E PROCESSAMENTO ============================ */
 // Lê os IDs digitados e retorna um array de Shows filtrados
-Show *lerEntrada(Show *shows, int total, int *quantidadeFiltrados)
-{
+Show *lerEntrada(Show *shows, int total, int *quantidadeFiltrados) {
     char input[MAX_STR];
     int capacidade = 100;
     *quantidadeFiltrados = 0;
 
     Show *filtrados = (Show *)malloc(capacidade * sizeof(Show));
 
-    while (fgets(input, MAX_STR, stdin))
-    {
+    while (fgets(input, MAX_STR, stdin)) {
         input[strcspn(input, "\n")] = 0;
 
-        if (strcmp(input, "FIM") == 0)
-        {
+        if (strcmp(input, "FIM") == 0) {
             break;
         }
 
-        for (int i = 0; i < total; i++)
-        {
-            if (strcmp(shows[i].showId, input) == 0)
-            {
-                if (*quantidadeFiltrados >= capacidade)
-                {
+        for (int i = 0; i < total; i++) {
+            if (strcmp(shows[i].showId, input) == 0) {
+                if (*quantidadeFiltrados >= capacidade) {
                     capacidade *= 2;
                     filtrados = (Show *)realloc(filtrados, capacidade * sizeof(Show));
                 }
@@ -436,133 +400,92 @@ Show *lerEntrada(Show *shows, int total, int *quantidadeFiltrados)
     return filtrados;
 }
 
-/* ============================ FUNÇÕES DE ORDENAÇÃO ============================ */
+/* ============================ HEAP SORT PARCIAL============================ */
+void trocar(Show* a, Show* b) {
+    Show temp = *a;
+    *a = *b;
+    *b = temp;
+}
+void heapify(Show vetor[], int n, int i) {
+    int maior = i; // Inicialmente, considera-se o pai como maior
+    int esquerda = 2 * i + 1;
+    int direita = 2 * i + 2;
 
-void ordenarPorTitulo(Show *shows, int n)
-{
-    for (int i = 0; i < n - 1; i++)
-    {
-        for (int j = i + 1; j < n; j++)
-        {
-            if (strcmp(shows[i].title, shows[j].title) > 0)
-            {
-                Show temp = shows[i];
-                shows[i] = shows[j];
-                shows[j] = temp;
-            }
-        }
+    // Compara com o filho da esquerda
+    if (esquerda < n && compararShows(&vetor[esquerda], &vetor[maior]) < 0) {
+        maior = esquerda;
+    }
+
+    // Compara com o filho da direita
+    if (direita < n && compararShows(&vetor[direita], &vetor[maior]) < 0) {
+        maior = direita;
+    }
+
+    // Se o maior não é o pai, faz a troca e heapifica recursivamente
+    if (maior != i) {
+        trocar(&vetor[i], &vetor[maior]);
+        heapify(vetor, n, maior);
     }
 }
 
-/* ============================ FUNÇÕES DE BUSCA ============================ */
-
-/*
-
-    Observação:
-    
-    Deu um problema na criação do log e eu não consegui resolver: o tempo é tão curto que não consigo/sei uma forma de representá-lo. Tentei até com nanosegundos (22/04/2025).
-
-*/
-
-
-void buscaBinariaTitulo(Show *shows, int numShows, char *tituloBusca)
-{
-    
-   
-    int totalComparacoes = 0;
-    FILE *arquivo;
-
-    clock_t inicio = clock(); // começa a medir o tempo de execução da função
-
-  
-    
-        int esq = 0;
-        int dir = numShows - 1;
-        int numComparacoes = 0;
-        int encontrado = 0;
-        
-        while (esq <= dir)
-        {
-            int meio = (esq + dir) / 2;
-            int cmp = strcmp(shows[meio].title, tituloBusca);
-            numComparacoes++;
-
-            if (cmp == 0)
-            {
-                encontrado = 1;
-                break;
-            }
-            else if (cmp < 0)
-            {
-                esq = meio + 1;
-            }
-            else
-            {
-                dir = meio - 1;
-            }
-        
-        totalComparacoes += numComparacoes;
-    }
-
-    if(encontrado == 1)
-    {
-        printf("SIM\n");
-    }else{printf("NAO\n");}
-   
-
-    clock_t fim = clock(); // termina de medir o tempo de execução da função
-
-    double tempoTotal = (double)(fim - inicio) / CLOCKS_PER_SEC;
-   
-    
-
-    //printf("Tempo médio: %.6f segundos\n", tempoMedio);
-    //printf("Comparações médias: %d\n", comparacoesMedias);
-
-    arquivo = fopen("838966_binaria.txt", "w");
-    if (arquivo != NULL)
-    {
-        fprintf(arquivo, "838966\t%.6f\t%d\n", tempoTotal, numComparacoes);
-        fclose(arquivo);
-    }
-    else
-    {
-        perror("Erro ao criar o arquivo de log");
+void construirHeap(Show vetor[], int n) {
+    int i;
+    for (i = n / 2 - 1; i >= 0; i--) {
+        heapify(vetor, n, i);
     }
 }
 
+void heapsortTopK(Show vetor[], int n, int k) {
+    if (k > n) {
+        k = n;
+    }
+
+    // Constrói um min-heap com todos os elementos
+    construirHeap(vetor, n);
+
+    // Array para guardar os top-k elementos ordenados
+    Show* topK = (Show*)malloc(k * sizeof(Show));
+    if (topK == NULL) {
+        perror("Erro ao alocar memória para topK");
+        exit(1);
+    }
+    
+    // Extrai os k menores elementos (considerando a comparação)
+    for (int i = 0; i < k; i++) {
+        topK[i] = clonarShow(vetor[0]); // Salva o topo do heap
+        
+        // Substitui o topo pelo último elemento e reduz o tamanho do heap
+        vetor[0] = vetor[n-1-i];
+        
+        // Reorganiza o heap com o novo tamanho
+        heapify(vetor, n-1-i, 0);
+    }
+
+
+    for (int i = 0; i < k; i++) {
+        imprimir_show(topK[i]);
+    }
+    
+    
+    free(topK);
+}
 
 /* ============================ FUNÇÃO PRINCIPAL ============================ */
-
-int main()
-{
+int main() {
     setlocale(LC_ALL, "en_US.UTF-8");
 
     Show *shows = NULL;
     int total = carregar_shows("/tmp/disneyplus.csv", &shows);
 
     int quantidadeFiltrados = 0;
-    char tituloBusca[MAX_STR];
-
     Show *showsFiltrados = lerEntrada(shows, total, &quantidadeFiltrados);
 
-    free(shows);
+    free(shows); 
 
-    ordenarPorTitulo(showsFiltrados, quantidadeFiltrados);
-    printf("NAO\n");
-    while (fgets(tituloBusca, MAX_STR, stdin))
-    {
-        tituloBusca[strcspn(tituloBusca, "\n")] = 0;
+    
+    heapsortTopK(showsFiltrados, quantidadeFiltrados, 10);
 
-        if (strcmp(tituloBusca, "FIM") == 0)
-        {
-            break;
-        }
-
-        buscaBinariaTitulo(showsFiltrados, quantidadeFiltrados, tituloBusca);
-    }
-
-    free(showsFiltrados);
+    free(showsFiltrados); 
 
     return 0;
 }

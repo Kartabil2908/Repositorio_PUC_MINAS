@@ -1,6 +1,3 @@
-
-// NESSE EXERCÍCIO, EU MODIFIQUEI ALGUMAS FUNÇÕES PARA FICAR MAIS SIMPLES DE MANUSEÁ-LAS MELHOR 
-
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -8,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 
 public class Show {
 
+   
    private String showId; // ID único do show
    private String type; // Tipo do conteúdo (Movie ou TV Show)
    private String title; // Título do show
@@ -19,6 +17,7 @@ public class Show {
    private String rating; // Classificação indicativa
    private String duration; // Duração (ou temporadas)
    private ArrayList<String> listedIn; // Lista de gêneros
+   
 
    // Métodos Getters e Setters
 
@@ -110,6 +109,9 @@ public class Show {
       this.listedIn = listedIn;
    }
 
+
+   // ================================================== FUNÇÃO IMPRIMIR ================================================== //
+
    // Método responsável por imprimir todos os dados de um objeto Show formatados
 
    public void imprimir() {
@@ -188,6 +190,8 @@ public class Show {
       System.out.println();
    }
 
+   // ================================================== FUNÇÃO LER ENTRADA ================================================== //
+
    // método para ler e retornar os shows com base no id, fica mais fácil de
    // manipular em outras funções;
    public static Show[] lerEntrada(Show[] showCSV, Scanner scanner) {
@@ -228,6 +232,9 @@ public class Show {
 
       return showFiltrado;
    }
+
+
+   // ================================================== FUNÇÃO LER O CSV ================================================== //
 
    // Lê o arquivo CSV e cria objetos Show para cada linha
    public static Show[] readShowsFromCSV(String caminhoCSV) {
@@ -349,68 +356,100 @@ public class Show {
 
    }
 
-   public static void pesquisaSequencialTitulo(Show[] vetor, Scanner scanner) {
-      ArrayList<String> pesquisas = new ArrayList<>();
-      String entrada;
-   
-      // Queima a linha "FIM" que foi deixada pelo método lerEntrada
-      if (scanner.hasNextLine()) {
-         scanner.nextLine();
-      }
-      
-   
-      // Lê os títulos até encontrar "FIM"
-      while (scanner.hasNextLine() && !(entrada = scanner.nextLine()).equals("FIM")) {
-         pesquisas.add(entrada.trim());
-      }
-   
-      int comparacoes = 0;
-      long inicio = System.nanoTime(); // Tempo inicial
-      System.out.println("NAO");
-      System.out.println("NAO");
-      for (String tituloBuscado : pesquisas) {
-         boolean encontrado = false;
-   
-         for (Show show : vetor) {
-            comparacoes++;
-            if (show != null && show.getTitle().equals(tituloBuscado)) {
-               encontrado = true;
-               break;
-            }
-         }
-         
-         if (encontrado) {
-            System.out.println("SIM");
-         } else {
-            System.out.println("NAO");
-         }
-      }
-   
-      long fim = System.nanoTime();
-      long tempoExecucao = (fim - inicio);
-   
-      try {
-         FileWriter fw = new FileWriter("838966_sequencial.txt");
-         fw.write("838966" + "\t" + tempoExecucao + "\t" + comparacoes);
-         fw.close();
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
-   }
 
-   // MAIN
+   // ================================================== FUNÇÃO DE ORDENAÇÃO ==================================================
+
+   public static void mergeSort(Show[] array, int esquerda, int direita) {
+      if (esquerda < direita) {
+          int meio = (esquerda + direita) / 2;
+          mergeSort(array, esquerda, meio);
+          mergeSort(array, meio + 1, direita);
+          intercalar(array, esquerda, meio, direita);
+      }
+  }
+
+  private static void intercalar(Show[] array, int esquerda, int meio, int direita) {
+      int tamanhoEsq = meio - esquerda + 1;
+      int tamanhoDir = direita - meio;
+
+      Show[] esquerdaArray = new Show[tamanhoEsq];
+      Show[] direitaArray = new Show[tamanhoDir];
+
+      for (int i = 0; i < tamanhoEsq; i++) {
+          esquerdaArray[i] = array[esquerda + i];
+      }
+
+      for (int j = 0; j < tamanhoDir; j++) {
+          direitaArray[j] = array[meio + 1 + j];
+      }
+
+      int i = 0, j = 0;
+      int k = esquerda;
+
+      while (i < tamanhoEsq && j < tamanhoDir) {
+          if (compararShows(esquerdaArray[i], direitaArray[j]) <= 0) {
+              array[k] = esquerdaArray[i];
+              i++;
+          } else {
+              array[k] = direitaArray[j];
+              j++;
+          }
+          k++;
+      }
+
+      // Copia os elementos restantes
+      while (i < tamanhoEsq) {
+          array[k++] = esquerdaArray[i++];
+      }
+
+      while (j < tamanhoDir) {
+          array[k++] = direitaArray[j++];
+      }
+  }
+
+  // Função de comparação por dateAdded, e desempate por title
+  private static int compararShows(Show s1, Show s2) {
+      Date d1 = s1.getDateAdded();
+      Date d2 = s2.getDateAdded();
+
+      if (d1 == null && d2 == null) {
+          return s1.getTitle().compareToIgnoreCase(s2.getTitle());
+      } else if (d1 == null) {
+          return 1; // coloca nulos no final
+      } else if (d2 == null) {
+          return -1;
+      }
+
+      int comparacaoData = d1.compareTo(d2);
+      if (comparacaoData != 0) {
+          return comparacaoData;
+      }
+
+      // Desempate por título
+      return s1.getTitle().compareToIgnoreCase(s2.getTitle());
+  }
+   // ================================================== FUNÇÃO MAIN ==================================================
    public static void main(String[] args) {
 
+      
       Scanner scanner = new Scanner(System.in);
       System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
 
-      Show[] shows = Show.readShowsFromCSV("/tmp/disneyplus.csv");
-
-      Show[] showFiltrado = lerEntrada(shows, scanner);
-
+      int comparacoes = 0;
+      int movimentacoes = 0; 
       
-      Show.pesquisaSequencialTitulo(showFiltrado, scanner);
-   }
+      Show[] todosOsShows = Show.readShowsFromCSV("../tmp/disneyplus.csv");
+  
+
+      Show[] showsFiltrados = lerEntrada(todosOsShows, scanner);
+  
+      mergeSort(showsFiltrados, 0, showsFiltrados.length-1);
+  
+      for (int i = 0; i < showsFiltrados.length; i++) {
+          showsFiltrados[i].imprimir();
+      }
+  }
+  
 
    
 }

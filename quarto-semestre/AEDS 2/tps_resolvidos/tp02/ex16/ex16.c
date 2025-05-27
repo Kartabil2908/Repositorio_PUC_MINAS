@@ -68,14 +68,10 @@ Show clonarShow(Show original);
 
 // Funções para leitura de entrada e processamento
 Show *lerEntrada(Show *shows, int total, int *quantidadeFiltrados);
+    
 
-// Funções de ordenação
-void swap(Show *a, Show *b);
-int particionar(Show *v, int low, int high);
-void quicksort(Show *v, int low, int high);
 
-// Função para geração de log
-void gerar_log(const char *nome_arquivo, double tempo_execucao);
+
 
 /* ============================ FUNÇÕES AUXILIARES PARA STRINGS ============================ */
 // Remove espaços em branco no início e no final da string
@@ -516,53 +512,60 @@ Show *lerEntrada(Show *shows, int total, int *quantidadeFiltrados) {
     return filtrados;
 }
 
-/* ============================ RADIX SORT ============================ */
-void insertion_sort_parcial(Show *shows, int n, int k) {
-    clock_t start_time = clock(); 
+/* ============================ INSERTION SORT PARCIAL============================ */
+void ordenarTopKPorType(Show vetor[], int n, int k) {
+    int comparacoes = 0;
+    int movimentacoes = 0;
+    clock_t inicio = clock();
 
-    for (int i = 1; i < k && i < n; i++) {
-        Show temp = clonarShow(shows[i]);
+    // Cria espaço para os k menores no início do vetor
+    for (int i = k; i < n; i++) {
+        for (int j = 0; j < k; j++) {
+            comparacoes++;
+            int cmpType = strcasecmp(vetor[i].type, vetor[j].type);
+            if (cmpType < 0 || (cmpType == 0 && strcasecmp(vetor[i].title, vetor[j].title) < 0)) {
+                // Inserir vetor[i] na posição j do top-k
+                Show temp = vetor[i];
+                for (int m = k - 1; m > j; m--) {
+                    vetor[m] = vetor[m - 1];
+                    movimentacoes++;
+                }
+                vetor[j] = temp;
+                movimentacoes++;
+                break;
+            }
+        }
+    }
+
+    // Ordena os k primeiros com insertion sort
+    for (int i = 1; i < k; i++) {
+        Show atual = vetor[i];
         int j = i - 1;
-
         while (j >= 0) {
             comparacoes++;
-            int cmp = compareIgnoreCase(shows[j].type, temp.type);
-        
-            // Se o 'type' for maior, ou se for igual e o 'title' for maior, fazemos a troca
-            if (cmp > 0 || (cmp == 0 && comparar_titles(shows[j].title, temp.title) > 0)) {
+            int cmpType = strcasecmp(vetor[j].type, atual.type);
+            if (cmpType > 0 || (cmpType == 0 && strcasecmp(vetor[j].title, atual.title) > 0)) {
+                vetor[j + 1] = vetor[j];
                 movimentacoes++;
-                shows[j + 1] = clonarShow(shows[j]);
                 j--;
             } else {
                 break;
             }
         }
-
+        vetor[j + 1] = atual;
         movimentacoes++;
-        shows[j + 1] = clonarShow(temp);
     }
 
-    clock_t end_time = clock(); 
-    double time_spent = (double)(end_time - start_time) / CLOCKS_PER_SEC; 
+    clock_t fim = clock();
+    double tempoExecucao = (double)(fim - inicio) * 1000.0 / CLOCKS_PER_SEC;
 
-    
-    gerar_log("matricula_insercao_partial.txt", time_spent);
-}
-
-/* ============================ FUNÇÃO DE LOG ============================ */
-
-// Função para gerar o log da execução
-void gerar_log(const char *nome_arquivo, double tempo_execucao) {
-    FILE *arquivo = fopen(nome_arquivo, "w");
-
-    if (arquivo == NULL) {
-        printf("Erro ao criar arquivo de log.\n");
-        return;
+    FILE *arquivo = fopen("838966_insercao.txt", "w");
+    if (arquivo != NULL) {
+        fprintf(arquivo, "838966\t%d\t%d\t%.0f\n", comparacoes, movimentacoes, tempoExecucao);
+        fclose(arquivo);
+    } else {
+        perror("Erro ao criar o arquivo de log");
     }
-
-    fprintf(arquivo, "838966\t%lld\t%lld\t%.6lf\n", comparacoes, movimentacoes, tempo_execucao);
-
-    fclose(arquivo);
 }
 
 /* ============================ FUNÇÃO PRINCIPAL ============================ */
@@ -570,7 +573,7 @@ int main() {
     setlocale(LC_ALL, "en_US.UTF-8");
 
     Show *shows = NULL;
-    int total = carregar_shows("../tmp/disneyplus.csv", &shows);
+    int total = carregar_shows("/tmp/disneyplus.csv", &shows);
 
     int quantidadeFiltrados = 0;
     Show *showsFiltrados = lerEntrada(shows, total, &quantidadeFiltrados);
@@ -578,7 +581,7 @@ int main() {
     free(shows); 
 
     
-    insertion_sort_parcial(showsFiltrados, quantidadeFiltrados, 10);
+    ordenarTopKPorType(showsFiltrados, quantidadeFiltrados, 10);
     
 
     for (int i = 0; i < 10; i++) {

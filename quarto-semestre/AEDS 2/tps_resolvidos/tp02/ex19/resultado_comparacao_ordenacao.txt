@@ -1,0 +1,24 @@
+=== Vetor com 100 elementos ===
+Selection Sort  => Tempo:      0 ms | Comparações:       4950 | Movimentações:        285
+Insertion Sort  => Tempo:      0 ms | Comparações:       2318 | Movimentações:       2320
+Bubble Sort     => Tempo:      0 ms | Comparações:       4830 | Movimentações:       6663
+Quicksort       => Tempo:      0 ms | Comparações:        652 | Movimentações:        909
+
+=== Vetor com 1000 elementos ===
+Selection Sort  => Tempo:      4 ms | Comparações:     499500 | Movimentações:       2976
+Insertion Sort  => Tempo:      3 ms | Comparações:     254409 | Movimentações:     254413
+Bubble Sort     => Tempo:      5 ms | Comparações:     499004 | Movimentações:     760242
+Quicksort       => Tempo:      1 ms | Comparações:      10709 | Movimentações:      15264
+
+=== Vetor com 10000 elementos ===
+Selection Sort  => Tempo:     38 ms | Comparações:   49995000 | Movimentações:      29970
+Insertion Sort  => Tempo:     24 ms | Comparações:   24727817 | Movimentações:   24727820
+Bubble Sort     => Tempo:     82 ms | Comparações:   49961847 | Movimentações:   74153463
+Quicksort       => Tempo:      1 ms | Comparações:     150112 | Movimentações:     223635
+
+=== Vetor com 100000 elementos ===
+Selection Sort  => Tempo:   3607 ms | Comparações: 4999950000 | Movimentações:     299979
+Insertion Sort  => Tempo:   2146 ms | Comparações: 2503471895 | Movimentações: 2503471908
+Bubble Sort     => Tempo:  17116 ms | Comparações: 4999940820 | Movimentações: 7510115727
+Quicksort       => Tempo:      8 ms | Comparações:    2075016 | Movimentações:    2568747
+

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.v": "verilog",
+        "stdbool.h": "c"
+    }
+}

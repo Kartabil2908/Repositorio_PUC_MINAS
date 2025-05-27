@@ -1,5 +1,4 @@
 
-// NESSE EXERCÍCIO, EU MODIFIQUEI ALGUMAS FUNÇÕES PARA FICAR MAIS SIMPLES DE MANUSEÁ-LAS MELHOR 
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -110,6 +109,9 @@ public class Show {
       this.listedIn = listedIn;
    }
 
+
+   // ================================================== FUNÇÃO IMPRIMIR ================================================== //
+
    // Método responsável por imprimir todos os dados de um objeto Show formatados
 
    public void imprimir() {
@@ -188,6 +190,8 @@ public class Show {
       System.out.println();
    }
 
+   // ================================================== FUNÇÃO LER ENTRADA ================================================== //
+
    // método para ler e retornar os shows com base no id, fica mais fácil de
    // manipular em outras funções;
    public static Show[] lerEntrada(Show[] showCSV, Scanner scanner) {
@@ -228,6 +232,9 @@ public class Show {
 
       return showFiltrado;
    }
+
+
+   // ================================================== FUNÇÃO LER O CSV ================================================== //
 
    // Lê o arquivo CSV e cria objetos Show para cada linha
    public static Show[] readShowsFromCSV(String caminhoCSV) {
@@ -346,71 +353,118 @@ public class Show {
       }
 
       return listaShows.toArray(new Show[0]); // Converte lista para array
-
    }
 
-   public static void pesquisaSequencialTitulo(Show[] vetor, Scanner scanner) {
-      ArrayList<String> pesquisas = new ArrayList<>();
-      String entrada;
-   
-      // Queima a linha "FIM" que foi deixada pelo método lerEntrada
-      if (scanner.hasNextLine()) {
-         scanner.nextLine();
-      }
-      
-   
-      // Lê os títulos até encontrar "FIM"
-      while (scanner.hasNextLine() && !(entrada = scanner.nextLine()).equals("FIM")) {
-         pesquisas.add(entrada.trim());
-      }
-   
-      int comparacoes = 0;
+   // ================================================== QUICKSORT PARCIAL por dateAdded ==================================================
+
+   public static void quicksortParcialDateAdded(Show[] shows, int k) {
       long inicio = System.nanoTime(); // Tempo inicial
-      System.out.println("NAO");
-      System.out.println("NAO");
-      for (String tituloBuscado : pesquisas) {
-         boolean encontrado = false;
-   
-         for (Show show : vetor) {
-            comparacoes++;
-            if (show != null && show.getTitle().equals(tituloBuscado)) {
-               encontrado = true;
-               break;
-            }
-         }
-         
-         if (encontrado) {
-            System.out.println("SIM");
-         } else {
-            System.out.println("NAO");
-         }
-      }
-   
-      long fim = System.nanoTime();
+      int comparacoes = 0;
+      int movimentacoes = 0;
+      
+      // Vetor para armazenar estatísticas para o registro de log
+      int[] estatisticas = new int[2]; // [0] = comparacoes, [1] = movimentacoes
+      
+      quicksortDateAdded(shows, 0, shows.length - 1, k, estatisticas);
+      
+      comparacoes = estatisticas[0];
+      movimentacoes = estatisticas[1];
+      
+      long fim = System.nanoTime(); // Tempo final
       long tempoExecucao = (fim - inicio);
-   
+
+      // Impressão do log
       try {
-         FileWriter fw = new FileWriter("838966_sequencial.txt");
-         fw.write("838966" + "\t" + tempoExecucao + "\t" + comparacoes);
+         FileWriter fw = new FileWriter("838966_quicksort.txt");
+         fw.write("838966" + "\t" + comparacoes + "\t" + movimentacoes + "\t" + tempoExecucao);
          fw.close();
       } catch (IOException e) {
          e.printStackTrace();
       }
    }
 
-   // MAIN
-   public static void main(String[] args) {
+   private static void quicksortDateAdded(Show[] shows, int esq, int dir, int k, int[] estatisticas) {
+      // Só continuamos se ainda for necessário para encontrar os k primeiros elementos
+      if (esq < dir && esq < k) {
+         int pivo = particionar(shows, esq, dir, estatisticas);
+         
+         // Recursão à esquerda (elementos menores que o pivô)
+         quicksortDateAdded(shows, esq, pivo - 1, k, estatisticas);
+         
+         // Recursão à direita (elementos maiores que o pivô)
+         // Só fazemos se o pivô estiver antes da posição k
+         if (pivo < k) {
+            quicksortDateAdded(shows, pivo + 1, dir, k, estatisticas);
+         }
+      }
+   }
 
+   private static int particionar(Show[] shows, int esq, int dir, int[] estatisticas) {
+      Show pivo = shows[dir];
+      int i = esq - 1;
+      
+      for (int j = esq; j < dir; j++) {
+         estatisticas[0]++; // Incrementa comparações
+         
+         int comparacao = compararDatas(shows[j], pivo);
+         
+         if (comparacao < 0) {
+            i++;
+            swap(shows, i, j);
+            estatisticas[1] += 3; // Três movimentações por troca
+         }
+      }
+      
+      swap(shows, i + 1, dir);
+      estatisticas[1] += 3; // Três movimentações para trocar o pivô
+      
+      return i + 1;
+   }
+   
+   // Método para comparar dois shows por dateAdded (com title como critério de desempate)
+   private static int compararDatas(Show a, Show b) {
+      // Tratamento para datas nulas
+      if (a.getDateAdded() == null && b.getDateAdded() == null) {
+         // Ambas são nulas, desempate por título
+         return a.getTitle().compareToIgnoreCase(b.getTitle());
+      } else if (a.getDateAdded() == null) {
+         return 1; // a é maior (null é considerado maior)
+      } else if (b.getDateAdded() == null) {
+         return -1; // b é maior
+      }
+      
+      // Comparação de datas
+      int comparacao = a.getDateAdded().compareTo(b.getDateAdded());
+      
+      // Se as datas forem iguais, desempata por título
+      if (comparacao == 0) {
+         return a.getTitle().compareToIgnoreCase(b.getTitle());
+      }
+      
+      return comparacao;
+   }
+   
+   // Método para trocar dois elementos de posição no array
+   private static void swap(Show[] shows, int i, int j) {
+      Show temp = shows[i];
+      shows[i] = shows[j];
+      shows[j] = temp;
+   }
+
+   // ================================================== FUNÇÃO MAIN ==================================================
+   public static void main(String[] args) {
       Scanner scanner = new Scanner(System.in);
       System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
 
       Show[] shows = Show.readShowsFromCSV("/tmp/disneyplus.csv");
 
-      Show[] showFiltrado = lerEntrada(shows, scanner);
+      Show[] showFiltrados = lerEntrada(shows, scanner);
 
-      
-      Show.pesquisaSequencialTitulo(showFiltrado, scanner);
+      quicksortParcialDateAdded(showFiltrados, 10);
+
+      // Imprime os 10 primeiros elementos ordenados
+      for(int i = 0; i < 10; i++) {
+         showFiltrados[i].imprimir();
+      }
    }
-
-   
 }
