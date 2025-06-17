@@ -4,113 +4,65 @@ import java.util.*;
 import java.nio.charset.StandardCharsets;
 
 
-class ListaSequencial
+class No
 {
-   public int tamanho; // Tamanho atual da lista
-   public Show[] data; // Array para armazenar os dados
-   public int capacidade; // Capacidade máxima da lista
+   public Show elemento;
+   public No prox;
 
-   // Construtor da lista sequencial
-   public ListaSequencial(int capacidade, Show[] shows) {
-      this.capacidade = capacidade;
-      this.data = new Show[capacidade];
-      this.tamanho = 0;
-
-      // Popula a lista com os shows fornecidos
-      for (int i = 0; i < shows.length && i < capacidade; i++) {
-         data[i] = shows[i].clonar(); // Clona o show para evitar referências diretas
-         tamanho++;
-      }
-   }
-
-   // Método para inserir no início da lista
-   public void inserirInicio(Show show) {
-      if (tamanho < capacidade) {
-
-         // Desloca os elementos para a direita
-         for (int i = tamanho; i > 0; i--) {
-            data[i] = data[i - 1];
-         }
-         data[0] = show; // Insere o novo show no início
-         tamanho++;
-      } else {
-         System.out.println("Lista cheia, não é possível inserir no início.");
-      }
-   }
-
-   // Método para inserir no final da lista
-   public void inserirFim(Show show){
-      if (tamanho < capacidade) {
-         data[tamanho] = show; // Insere o novo show no final
-         tamanho++;
-      } else {
-         System.out.println("Lista cheia, não é possível inserir no final.");
-      }
-   }
-
-   // Método para inserir em uma posição específica
-   public void inserir(Show show, int posicao) {
-      if (posicao < 0 || posicao > tamanho || tamanho >= capacidade) {
-         System.out.println("Posição inválida ou lista cheia.");
-         return;
-      }
-      // Desloca os elementos para a direita
-      for (int i = tamanho; i > posicao; i--) {
-         data[i] = data[i - 1];
-      }
-      data[posicao] = show; // Insere o novo show na posição especificada
-      tamanho++;
-   }
-
-// Método para remover do início da lista
-   public Show removerInicio() {
-      if (tamanho == 0) {
-         System.out.println("Lista vazia, não é possível remover do início.");
-         return null;
-      }
-      Show showRemovido = data[0]; // Armazena o show a ser removido
-
-      // Desloca os elementos para a esquerda
-      for (int i = 1; i < tamanho; i++) {
-         data[i - 1] = data[i];
-      }
-      tamanho--; // Reduz o tamanho da lista
-      return showRemovido; // Retorna o show removido
-   }
-
-// Método para remover do final da lista
-   public Show removerFim() {
-      if (tamanho == 0) {
-         System.out.println("Lista vazia, não é possível remover do final.");
-         return null;
-      }
-      tamanho--; // Reduz o tamanho da lista
-      return data[tamanho]; // Retorna o show removido do final
-   }
-
-// Método para remover de uma posição específica
-   public Show remover(int posicao) {
-      if (posicao < 0 || posicao >= tamanho) {
-         System.out.println("Posição inválida.");
-         return null;
-      }
-      Show showRemovido = data[posicao]; // Armazena o show a ser removido
-
-      // Desloca os elementos para a esquerda
-      for (int i = posicao + 1; i < tamanho; i++) {
-         data[i - 1] = data[i];
-      }
-      tamanho--; // Reduz o tamanho da lista
-      return showRemovido; // Retorna o show removido
-   }
-
-
-
-
-
-   // Método para popular a lista com um array de shows
-   public void popular(Show[] shows, Scanner scanner)
+   No(Show elemento)
    {
+      this.elemento = elemento;
+      this.prox = null;
+   }
+}
+
+class PilhaFlexivel
+{
+   public No topo; 
+   int tamanho;
+
+
+
+   public PilhaFlexivel()
+   {
+      this.topo = null;
+   }
+
+   public PilhaFlexivel(Show[] Shows)
+   {
+      for (Show show : Shows) {
+         this.inserir(show);
+      }
+   }
+
+   public boolean isVazia()
+   {
+      return (this.topo == null);
+   }
+
+   public void inserir(Show elemento)
+   {
+      No novo = new No(elemento);
+      novo.prox = this.topo;
+      this.topo = novo;
+      this.tamanho++;
+   }
+
+   public Show remover()
+   {
+      if (this.isVazia()) {
+         throw new RuntimeException("Pilha vazia");
+      }
+      Show elemento = this.topo.elemento;
+      this.topo = this.topo.prox;
+      this.tamanho--;
+
+      return elemento;
+   }
+
+   public void popularPilha(Show[] Shows, Scanner scanner)
+   {
+   
       int numComandos = scanner.nextInt(); // Lê o número de comandos
       scanner.nextLine(); // Limpa o buffer do scanner
 
@@ -127,16 +79,7 @@ class ListaSequencial
 
 
          // Determina idShow e posicao com base na operacao, verificando o tamanho de 'partes'
-         if (operacao.equals("I*")) {
-            if (partes.length > 2) {
-               posicao = Integer.parseInt(partes[1]);
-               idShow = partes[2];
-            } else {
-               
-               numComandos--;
-               continue;     // Pula para o próximo comando
-            }
-         } else if (operacao.equals("II") || operacao.equals("IF")) {
+         if (operacao.equals("I")) {
             if (partes.length > 1) {
                idShow = partes[1];
             } else {
@@ -144,21 +87,19 @@ class ListaSequencial
                numComandos--;
                continue;     // Pula para o próximo comando
             }
-         } else if (operacao.equals("R*")) {
-            if (partes.length < 2) {
-
-               numComandos--;
-               continue;     // Pula para o próximo comando
-            }
-            
+         } else if (operacao.equals("R")) {
+            // A operação R não precisa de idShow, apenas remove do topo
+         } else {
+            // Comando inválido, pular para o próximo
+            numComandos--;
+            continue;
          }
-         
 
          Show showEncontrado = null; 
 
          // Busca o show pelo ID no array de shows, somente se um idShow foi definido (para operações de inserção)
          if (idShow != null) {
-            for (Show s : shows) { 
+            for (Show s : Shows) { 
                if (s.getShowId().equals(idShow)) {
                   showEncontrado = s.clonar(); // Clona o show encontrado
                   break; // Para o loop ao encontrar o show
@@ -169,64 +110,44 @@ class ListaSequencial
          // Verifica a operação e executa a ação correspondente
          switch(operacao)
          {
-            case "I*":
-               inserir(showEncontrado, posicao);
-               //System.out.println("(I) " + showEncontrado.getTitle() + " na posição " + posicao); // Imprime o título do show inserido
-
+            case "I":
+               if (showEncontrado != null) {
+                  inserir(showEncontrado); // Insere o show na pilha
+               } else {
+                  System.out.println("Show com ID " + idShow + " não encontrado.");
+               }
                break; 
 
-            case "II":
-               inserirInicio(showEncontrado); // Insere o show no início
-               //System.out.println("(I) " + showEncontrado.getTitle() + " no início"); // Imprime o título do show inserido
-
-               break;
-            
-            case "IF":
-               inserirFim(showEncontrado); // Insere o show no final
-               //System.out.println("(I) " + showEncontrado.getTitle() + " no final"); // Imprime o título do show inserido
-
-               break;
-
-            case "RI":
-               Show showRemovidoInicio = removerInicio(); // Remove do início
-               if (showRemovidoInicio != null) {
-                  System.out.println("(R) " + showRemovidoInicio.getTitle()); // Imprime o título do show removido
-               }
-               break;
-            
-            case "RF":
-               Show showRemovidoFim = removerFim(); // Remove do final
-               if (showRemovidoFim != null) {
-                  System.out.println("(R) " + showRemovidoFim.getTitle()); // Imprime o título do show removido
-            
-               }
-               break;
-
-            case "R*":
-               posicao = Integer.parseInt(partes[1]); // Posição para remover
-               Show showRemovido = remover(posicao); // Remove da posição especificada
-               if (showRemovido != null) {
+            case "R":
+               try {
+                  Show showRemovido = remover(); // Remove do topo
                   System.out.println("(R) " + showRemovido.getTitle()); // Imprime o título do show removido
+               } catch (RuntimeException e) {
+                  System.out.println(e.getMessage()); // Imprime mensagem de erro se a pilha estiver vazia
                }
                break;
-
             }
 
          numComandos--;
 
-
       }
    }
 
+   public void imprimirPilha()
+   {
+      No atual = this.topo; // Começa do topo da pilha
+      while (atual != null) {
 
+         System.out.print("["+ (this.tamanho - 1) + "] ");
 
-   // Método para imprimir a lista
-   public void imprimir() {
-      for (int i = 0; i < tamanho; i++) {
-         data[i].imprimir(); // Chama o método imprimir de cada show
+         atual.elemento.imprimir(); // Imprime o show atual
+         atual = atual.prox; // Move para o próximo nó
+         tamanho--;
       }
    }
+
 }
+
 
 
 public class Show {
@@ -607,18 +528,17 @@ public class Show {
 
       Show[] showFiltrado = lerEntrada(shows, scanner);
 
-      ListaSequencial lista = new ListaSequencial(1369, showFiltrado); // Cria a lista sequencial com capacidade máxima de 1368
 
-      // Insere os shows filtrados na lista sequencial
+      PilhaFlexivel pilha = new PilhaFlexivel(showFiltrado);
 
-      lista.popular(shows, scanner);
+      pilha.popularPilha(shows, scanner);
 
-    
+      pilha.imprimirPilha();
       
-         lista.imprimir();
-      
+      scanner.close();
 
-     
+
+
       
    }
 

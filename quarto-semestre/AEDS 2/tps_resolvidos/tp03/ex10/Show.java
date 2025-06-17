@@ -4,228 +4,205 @@ import java.util.*;
 import java.nio.charset.StandardCharsets;
 
 
-class ListaSequencial
+class No
 {
-   public int tamanho; // Tamanho atual da lista
-   public Show[] data; // Array para armazenar os dados
-   public int capacidade; // Capacidade máxima da lista
+   public Show elemento;
+   public No prox;
+   public No ant;
 
-   // Construtor da lista sequencial
-   public ListaSequencial(int capacidade, Show[] shows) {
-      this.capacidade = capacidade;
-      this.data = new Show[capacidade];
+   No()
+   {
+      this.elemento = null;
+      this.prox = null;
+      this.ant = null;
+   }
+
+   No(Show elemento)
+   {
+      this.elemento = elemento;
+      this.prox = null;
+      this.ant = null;
+   }
+}
+
+
+class ListaFlexivelDuplamenteEncadeada
+{
+   private No primeiro;
+   private No ultimo;
+   private int tamanho;
+
+   public ListaFlexivelDuplamenteEncadeada()
+   {
+      this.primeiro = null;
+      this.ultimo = null;
       this.tamanho = 0;
+   }
 
-      // Popula a lista com os shows fornecidos
-      for (int i = 0; i < shows.length && i < capacidade; i++) {
-         data[i] = shows[i].clonar(); // Clona o show para evitar referências diretas
-         tamanho++;
+   public ListaFlexivelDuplamenteEncadeada(Show[] shows)
+   {
+      this.primeiro = null;
+      this.ultimo = null;
+      this.tamanho = 0;
+      for (Show show : shows) {
+         inserir(show);
       }
    }
 
-   // Método para inserir no início da lista
-   public void inserirInicio(Show show) {
-      if (tamanho < capacidade) {
-
-         // Desloca os elementos para a direita
-         for (int i = tamanho; i > 0; i--) {
-            data[i] = data[i - 1];
-         }
-         data[0] = show; // Insere o novo show no início
-         tamanho++;
-      } else {
-         System.out.println("Lista cheia, não é possível inserir no início.");
-      }
+   public boolean isEmpty()
+   {
+      return (this.tamanho == 0);
    }
 
-   // Método para inserir no final da lista
-   public void inserirFim(Show show){
-      if (tamanho < capacidade) {
-         data[tamanho] = show; // Insere o novo show no final
-         tamanho++;
-      } else {
-         System.out.println("Lista cheia, não é possível inserir no final.");
-      }
+   public int size()
+   {
+      return this.tamanho;
    }
 
-   // Método para inserir em uma posição específica
-   public void inserir(Show show, int posicao) {
-      if (posicao < 0 || posicao > tamanho || tamanho >= capacidade) {
-         System.out.println("Posição inválida ou lista cheia.");
-         return;
+   public void inserir(Show elemento)
+   {
+      No novoNo = new No(elemento);
+      if (isEmpty())
+      {
+         primeiro = ultimo = novoNo;
       }
-      // Desloca os elementos para a direita
-      for (int i = tamanho; i > posicao; i--) {
-         data[i] = data[i - 1];
+      else
+      {
+         ultimo.prox = novoNo;
+         novoNo.ant = ultimo;
+         ultimo = novoNo;
       }
-      data[posicao] = show; // Insere o novo show na posição especificada
       tamanho++;
    }
 
-// Método para remover do início da lista
-   public Show removerInicio() {
-      if (tamanho == 0) {
-         System.out.println("Lista vazia, não é possível remover do início.");
-         return null;
-      }
-      Show showRemovido = data[0]; // Armazena o show a ser removido
+   public void quickSortDateAdded() {
+    // Se a lista está vazia ou tem apenas um elemento, não precisa ordenar
+    if (this.primeiro == null || this.primeiro == this.ultimo) {
+        return;
+    }
+    quickSortRecursive(this.primeiro, this.ultimo);
+}
 
-      // Desloca os elementos para a esquerda
-      for (int i = 1; i < tamanho; i++) {
-         data[i - 1] = data[i];
-      }
-      tamanho--; // Reduz o tamanho da lista
-      return showRemovido; // Retorna o show removido
-   }
+private void quickSortRecursive(No esq, No dir) {
 
-// Método para remover do final da lista
-   public Show removerFim() {
-      if (tamanho == 0) {
-         System.out.println("Lista vazia, não é possível remover do final.");
-         return null;
-      }
-      tamanho--; // Reduz o tamanho da lista
-      return data[tamanho]; // Retorna o show removido do final
-   }
+    // Verifica se os nós são válidos e se ainda há elementos a ordenar
+    if (esq != null && dir != null && esq != dir && esq.ant != dir) {
+      
+        No pivo = particionar(esq, dir);
 
-// Método para remover de uma posição específica
-   public Show remover(int posicao) {
-      if (posicao < 0 || posicao >= tamanho) {
-         System.out.println("Posição inválida.");
-         return null;
-      }
-      Show showRemovido = data[posicao]; // Armazena o show a ser removido
+        // Ordena recursivamente à esquerda do pivô
+        quickSortRecursive(esq, pivo.ant);
 
-      // Desloca os elementos para a esquerda
-      for (int i = posicao + 1; i < tamanho; i++) {
-         data[i - 1] = data[i];
-      }
-      tamanho--; // Reduz o tamanho da lista
-      return showRemovido; // Retorna o show removido
-   }
+        // Ordena recursivamente à direita do pivô
+        quickSortRecursive(pivo.prox, dir);
+    }
+}
 
+private No particionar(No esq, No dir) {
 
+    Show ValorPivo = dir.elemento;  // Pivô é o elemento do último nó
 
+    No i = esq.ant;  // i aponta para o último elemento menor ou igual ao pivô (inicialmente antes do esq)
 
+    for (No j = esq; j != dir; j = j.prox) {
 
-   // Método para popular a lista com um array de shows
-   public void popular(Show[] shows, Scanner scanner)
+        int comp = compararShows(j.elemento, ValorPivo);
+        if (comp <= 0) {
+
+            if (i == null) {
+                i = esq;
+            } else {
+                i = i.prox;
+            }
+            swap(i, j);
+        }
+    }
+    // Após o loop, avança i para o próximo para colocar o pivô na posição correta
+    if (i == null) {
+        i = esq;
+    } else {
+        i = i.prox;
+    }
+    // Troca o pivô com o elemento em i
+    swap(i, dir);
+
+    return i;  // Retorna o nó onde o pivô foi colocado
+}
+
+private void swap(No no1, No no2) {
+    if (no1 == null || no2 == null || no1 == no2) {
+        return; // Nada a fazer se um nó for nulo ou forem o mesmo nó
+    }
+    Show temp = no1.elemento;
+    no1.elemento = no2.elemento;
+    no2.elemento = temp;
+}
+
+private int compararShows(Show s1, Show s2) {
+    // Caso ambos sejam nulos, são iguais
+    if (s1 == null && s2 == null) {
+        return 0;
+    }
+    // Se só s1 for nulo, consideramos s1 menor
+    if (s1 == null) {
+        return -1;
+    }
+    // Se só s2 for nulo, consideramos s2 menor, logo s1 é maior
+    if (s2 == null) {
+        return 1;
+    }
+
+    Date date1 = s1.getDateAdded();
+    Date date2 = s2.getDateAdded();
+
+    // Se só date1 for nulo, s1 é menor
+    if (date1 == null && date2 != null) {
+        return -1;
+    }
+    // Se só date2 for nulo, s2 é menor, logo s1 é maior
+    if (date1 != null && date2 == null) {
+        return 1;
+    }
+
+    // Ambas as datas são nulas ou não nulas
+    int DataComparada = 0;
+    if (date1 != null && date2 != null) {
+        DataComparada = date1.compareTo(date2);
+    }
+
+    // Se as datas são iguais (ou ambas nulas), compara pelos títulos
+    if (DataComparada == 0) {
+        String title1;
+        String title2;
+
+        if (s1.getTitle() == null) {
+            title1 = "";
+        } else {
+            title1 = s1.getTitle();
+        }
+
+        if (s2.getTitle() == null) {
+            title2 = "";
+        } else {
+            title2 = s2.getTitle();
+        }
+
+        return title1.compareToIgnoreCase(title2);
+    } else {
+        // Datas diferentes, retorna o resultado da comparação
+        return DataComparada;
+    }
+}
+
+   public void imprimirLista()
    {
-      int numComandos = scanner.nextInt(); // Lê o número de comandos
-      scanner.nextLine(); // Limpa o buffer do scanner
-
-      while(numComandos > 0)
-      {
-         String comando = scanner.nextLine();
-         String[] partes = comando.split(" "); // Divide o comando em partes
-
-         String operacao = partes[0]; // A primeira parte é a operação
-         String idShow = null; // Variável para armazenar o ID do show, inicializada como null
-         int posicao = 0;
-
-
-
-
-         // Determina idShow e posicao com base na operacao, verificando o tamanho de 'partes'
-         if (operacao.equals("I*")) {
-            if (partes.length > 2) {
-               posicao = Integer.parseInt(partes[1]);
-               idShow = partes[2];
-            } else {
-               
-               numComandos--;
-               continue;     // Pula para o próximo comando
-            }
-         } else if (operacao.equals("II") || operacao.equals("IF")) {
-            if (partes.length > 1) {
-               idShow = partes[1];
-            } else {
-               
-               numComandos--;
-               continue;     // Pula para o próximo comando
-            }
-         } else if (operacao.equals("R*")) {
-            if (partes.length < 2) {
-
-               numComandos--;
-               continue;     // Pula para o próximo comando
-            }
-            
-         }
-         
-
-         Show showEncontrado = null; 
-
-         // Busca o show pelo ID no array de shows, somente se um idShow foi definido (para operações de inserção)
-         if (idShow != null) {
-            for (Show s : shows) { 
-               if (s.getShowId().equals(idShow)) {
-                  showEncontrado = s.clonar(); // Clona o show encontrado
-                  break; // Para o loop ao encontrar o show
-               }
-            }
-         }
-
-         // Verifica a operação e executa a ação correspondente
-         switch(operacao)
-         {
-            case "I*":
-               inserir(showEncontrado, posicao);
-               //System.out.println("(I) " + showEncontrado.getTitle() + " na posição " + posicao); // Imprime o título do show inserido
-
-               break; 
-
-            case "II":
-               inserirInicio(showEncontrado); // Insere o show no início
-               //System.out.println("(I) " + showEncontrado.getTitle() + " no início"); // Imprime o título do show inserido
-
-               break;
-            
-            case "IF":
-               inserirFim(showEncontrado); // Insere o show no final
-               //System.out.println("(I) " + showEncontrado.getTitle() + " no final"); // Imprime o título do show inserido
-
-               break;
-
-            case "RI":
-               Show showRemovidoInicio = removerInicio(); // Remove do início
-               if (showRemovidoInicio != null) {
-                  System.out.println("(R) " + showRemovidoInicio.getTitle()); // Imprime o título do show removido
-               }
-               break;
-            
-            case "RF":
-               Show showRemovidoFim = removerFim(); // Remove do final
-               if (showRemovidoFim != null) {
-                  System.out.println("(R) " + showRemovidoFim.getTitle()); // Imprime o título do show removido
-            
-               }
-               break;
-
-            case "R*":
-               posicao = Integer.parseInt(partes[1]); // Posição para remover
-               Show showRemovido = remover(posicao); // Remove da posição especificada
-               if (showRemovido != null) {
-                  System.out.println("(R) " + showRemovido.getTitle()); // Imprime o título do show removido
-               }
-               break;
-
-            }
-
-         numComandos--;
-
-
+      No atual = primeiro;
+      while (atual != null) {
+         atual.elemento.imprimir(); 
+         atual = atual.prox; 
       }
    }
 
-
-
-   // Método para imprimir a lista
-   public void imprimir() {
-      for (int i = 0; i < tamanho; i++) {
-         data[i].imprimir(); // Chama o método imprimir de cada show
-      }
-   }
 }
 
 
@@ -607,15 +584,11 @@ public class Show {
 
       Show[] showFiltrado = lerEntrada(shows, scanner);
 
-      ListaSequencial lista = new ListaSequencial(1369, showFiltrado); // Cria a lista sequencial com capacidade máxima de 1368
+      ListaFlexivelDuplamenteEncadeada lista = new ListaFlexivelDuplamenteEncadeada(showFiltrado);
 
-      // Insere os shows filtrados na lista sequencial
+      lista.quickSortDateAdded();
 
-      lista.popular(shows, scanner);
-
-    
-      
-         lista.imprimir();
+      lista.imprimirLista();
       
 
      

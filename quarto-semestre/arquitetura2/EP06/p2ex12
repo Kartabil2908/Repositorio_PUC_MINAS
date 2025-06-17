@@ -1,0 +1,21 @@
+.data
+val: .word 10        
+ptr1: .word 0x10010000      
+ptr2: .word 0x10010004      
+ptr3: .word 0x10010008      
+
+.text
+.globl main
+main:
+
+    lui   $t0, 0x1001          
+    ori   $t0, $t0, 0x000C     
+
+    lw    $t1, 0($t0)          # $t1 = *x     = conteúdo de ptr3 -> ptr2 (0x10010008)
+    lw    $t2, 0($t1)          # $t2 = **x    = conteúdo de ptr2 -> ptr1 (0x10010004)
+    lw    $t3, 0($t2)          # $t3 = ***x   = conteúdo de ptr1 -> val (10)
+
+    sll   $t3, $t3, 1          # $t3 = $t3 * 2
+
+    sw    $t3, 0($t2)          # ***x = $t3
+
